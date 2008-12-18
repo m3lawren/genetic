@@ -1,0 +1,5 @@
+.scons*
+.*.sw*
+*.o
+*.a
+genetic
