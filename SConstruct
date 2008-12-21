@@ -6,7 +6,6 @@ pwd = Dir('.')
 env = Environment(CCFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
 
 SConscript('extras/SConscript')
-SConscript('tinyxml/SConscript')
 
 sources = [
 	'dna.cc',
