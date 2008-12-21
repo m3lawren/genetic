@@ -1,8 +1,9 @@
 extras = Dir('extras')
-tinyxml = Dir('tinyxml')
+extrasIMG = Dir('extras/IMG')
+extrasTinyxml = Dir('extras/tinyxml')
 pwd = Dir('.')
 
-env = Environment(CCFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags`', LIBPATH=[extras, tinyxml], CPPPATH=[extras, tinyxml, pwd])
+env = Environment(CCFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
 
 SConscript('extras/SConscript')
 SConscript('tinyxml/SConscript')
@@ -14,4 +15,4 @@ sources = [
 	'polygon.cc',
 ]
 
-env.Program('genetic', sources, LIBS=['SDL', 'SDL_image', 'SDL_gfx', 'extras', 'png', 'tinyxml'])
+env.Program('genetic', sources, LIBS=['SDL', 'SDL_image', 'SDL_gfx', 'extras', 'png'])

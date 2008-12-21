@@ -1,7 +1,5 @@
-env = Environment(CCFLAGS='-O2 `sdl-config --cflags`')
+objs = []
+objs.append(SConscript('IMG/SConscript'))
+objs.append(SConscript('tinyxml/SConscript'))
 
-sources = [
-	'IMG_savepng.c',
-]
-
-env.Library('extras', sources)
+Library('extras', objs)

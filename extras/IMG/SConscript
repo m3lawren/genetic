@@ -1,0 +1,11 @@
+env = Environment(CCFLAGS='-O2 `sdl-config --cflags`')
+
+sources = [
+	'IMG_savepng.c',
+]
+
+objs = []
+for source in sources:
+	objs.append(env.Object(source))
+
+Return('objs')

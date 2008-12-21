@@ -6,4 +6,8 @@ sources = [
 	'tinyxmlparser.cpp',
 ]
 
-env.Library('tinyxml', sources)
+objs = []
+for source in sources:
+	objs.append(env.Object(source))
+
+Return('objs')
