@@ -1,0 +1,9 @@
+env = Environment(CCFLAGS='-O2 -DTIXML_USE_STL')
+
+sources = [
+	'tinyxml.cpp',
+	'tinyxmlerror.cpp',
+	'tinyxmlparser.cpp',
+]
+
+env.Library('tinyxml', sources)
