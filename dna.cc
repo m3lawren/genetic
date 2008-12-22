@@ -29,3 +29,22 @@ uint64_t DNA::score() const {
 void DNA::setScore(uint64_t v) {
 	_score = v;
 }
+
+bool operator==(const DNA& a, const DNA& b) {
+	if (a.num() != b.num()) {
+		return false;
+	}
+	if (a.score() != b.score()) {
+		return false;
+	}
+	for (uint32_t idx = 0; idx < a.num(); idx++) {
+		if (a[idx] != b[idx]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool operator!=(const DNA& a, const DNA& b) {
+	return !(a == b);
+}

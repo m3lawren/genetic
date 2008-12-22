@@ -34,4 +34,9 @@ class Polygon {
 		struct Colour _colour;
 };
 
+bool operator==(const Polygon&, const Polygon&);
+bool operator!=(const Polygon&, const Polygon&);
+bool operator==(const struct Colour& a, const struct Colour& b);
+bool operator!=(const struct Colour& a, const struct Colour& b);
+
 #endif

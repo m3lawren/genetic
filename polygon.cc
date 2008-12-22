@@ -57,3 +57,31 @@ const int16_t* Polygon::y() const {
 const struct Colour& Polygon::colour() const {
 	return _colour;
 }
+
+bool operator==(const Polygon& a, const Polygon& b) {
+	if (a.colour() != b.colour()) {
+		return false;
+	}
+	if (a.num() != b.num()) {
+		return false;
+	}
+	if (memcmp(a.x(), b.x(), a.num() * sizeof(int16_t)) != 0) {
+		return false;
+	}
+	if (memcmp(a.y(), b.y(), a.num() * sizeof(int16_t)) != 0) {
+		return false;
+	}
+	return true;
+}
+
+bool operator!=(const Polygon& a, const Polygon& b) {
+	return !(a == b);
+}
+
+bool operator==(const struct Colour& a, const struct Colour& b) {
+	return (memcmp(&a, &b, sizeof(struct Colour)) == 0);
+}
+
+bool operator!=(const struct Colour& a, const struct Colour& b) {
+	return !(a == b);
+}
