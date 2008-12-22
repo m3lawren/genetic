@@ -21,3 +21,11 @@ const Polygon& DNA::operator[](size_t idx) const {
 const std::vector<Polygon>& DNA::polygons() const {
 	return _polys;
 }
+
+uint64_t DNA::score() const {
+	return _score;
+}
+
+void DNA::setScore(uint64_t v) {
+	_score = v;
+}
