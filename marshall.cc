@@ -70,6 +70,11 @@ TiXmlElement* saveConfig(const Config& c) {
 	e->SetAttribute("Width", c.width());
 	e->SetAttribute("Height", c.height());
 	e->SetAttribute("MaxPolySize", c.maxPolySize());
+	e->SetAttribute("DeltaCoord", c.deltaCoord());
+	e->SetAttribute("MaxDegree", c.maxDegree());
+	e->SetAttribute("MaxAlpha", c.maxAlpha());
+	e->SetAttribute("MinAlpha", c.minAlpha());
+	e->SetAttribute("DeltaColour", c.deltaColour());
 	return e;
 }
 
@@ -99,19 +104,19 @@ void loadVertex(const TiXmlElement* e, int16_t* x, int16_t* y, int n) {
 
 int loadColour(const TiXmlElement* e, struct Colour& c) {
 	int t;
-	if (TIXML_SUCCESS != e->QueryIntAttribute("R", &t)) {
+	if (TIXML_SUCCESS != e->QueryIntAttribute("R", &t) || t > 255 || t < 0) {
 		return 1;
 	}
 	c.r = t;
-	if (TIXML_SUCCESS != e->QueryIntAttribute("G", &t)) {
+	if (TIXML_SUCCESS != e->QueryIntAttribute("G", &t) || t > 255 || t < 0) {
 		return 1;
 	}
 	c.g = t;
-	if (TIXML_SUCCESS != e->QueryIntAttribute("B", &t)) {
+	if (TIXML_SUCCESS != e->QueryIntAttribute("B", &t) || t > 255 || t < 0) {
 		return 1;
 	}
 	c.b = t;
-	if (TIXML_SUCCESS != e->QueryIntAttribute("A", &t)) {
+	if (TIXML_SUCCESS != e->QueryIntAttribute("A", &t) || t > 255 || t < 0) {
 		return 1;
 	}
 	c.a = t;
@@ -230,6 +235,21 @@ void loadConfig(const TiXmlElement* e, Config& c) {
 	}
 	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolySize", &t) && t > 0) {
 		c.setMaxPolySize(t);
+	}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("DeltaCoord", &t) && t > 0) {
+		c.setDeltaCoord(t);
+	}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxDegree", &t) && t > 0) {
+		c.setMaxDegree(t);
+	}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxAlpha", &t) && t >= 0 && t <= 255) {
+		c.setMaxAlpha(t);
+	}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("MinAlpha", &t) && t >= 0 && t <= 255) {
+		c.setMinAlpha(t);
+	}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("DeltaColour", &t) && t >= 0 && t <= 255) {
+		c.setDeltaColour(t);
 	}
 }
 	
