@@ -13,8 +13,12 @@ struct Colour {
 
 class Polygon {
 	public:
-		Polygon();
+		Polygon(size_t num, const uint32_t* x, const uint32_t* y, struct Colour colour);
+		Polygon(const Polygon&);
+
 		~Polygon();
+
+		Polygon& operator=(const Polygon&);
 
 		size_t num() const;
 		const uint32_t* x() const;
@@ -22,9 +26,7 @@ class Polygon {
 		const struct Colour& colour() const;
 
 	private:
-		Polygon(const Polygon&);
-		Polygon& operator=(const Polygon&);
-
+		size_t _cap;
 		size_t _num;
 		uint32_t* _x;
 		uint32_t* _y;
