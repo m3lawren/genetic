@@ -12,6 +12,7 @@ class Config {
 		int32_t  width() const;
 		int32_t  height() const;
 
+		uint32_t maxPolygons() const;
 		int32_t  maxPolySize() const;
 		int32_t  deltaCoord() const;
 		uint32_t maxDegree() const;
@@ -24,6 +25,7 @@ class Config {
 		void setWidth(int32_t);
 		void setHeight(int32_t);
 
+		void setMaxPolygons(uint32_t);
 		void setMaxPolySize(int32_t);
 		void setDeltaCoord(int32_t);
 		void setMaxDegree(uint32_t);
@@ -40,6 +42,7 @@ class Config {
 		int32_t _w;
 		int32_t _h;
 
+		uint32_t _mp;
 		int32_t _mpsz;
 		int32_t _dcr;
 		uint32_t _md;

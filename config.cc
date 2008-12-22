@@ -23,6 +23,10 @@ int32_t Config::height() const {
 	return _h;
 }
 
+uint32_t Config::maxPolygons() const {
+	return _mp;
+}
+
 int32_t Config::maxPolySize() const {
 	return _mpsz;
 }
@@ -59,6 +63,10 @@ void Config::setWidth(int32_t v) {
 void Config::setHeight(int32_t v) {
 	assert(v > 0);
 	_h = v;
+}
+
+void Config::setMaxPolygons(uint32_t v) {
+	_mp = v;
 }
 
 void Config::setMaxPolySize(int32_t v) {

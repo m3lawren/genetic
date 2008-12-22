@@ -69,6 +69,7 @@ TiXmlElement* saveConfig(const Config& c) {
 	e->SetAttribute("WhiteBackground", c.whiteBG() ? 1 : 0);
 	e->SetAttribute("Width", c.width());
 	e->SetAttribute("Height", c.height());
+	e->SetAttribute("MaxPolygons", c.maxPolygons());
 	e->SetAttribute("MaxPolySize", c.maxPolySize());
 	e->SetAttribute("DeltaCoord", c.deltaCoord());
 	e->SetAttribute("MaxDegree", c.maxDegree());
@@ -234,6 +235,9 @@ void loadConfig(const TiXmlElement* e, Config& c) {
 	}
 	if (TIXML_SUCCESS == e->QueryIntAttribute("Height", &t) && t > 0) {
 		c.setHeight(t);
+	}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolygons", &t) && t > 0) {
+		c.setMaxPolygons(t);
 	}
 	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolySize", &t) && t > 0) {
 		c.setMaxPolySize(t);
