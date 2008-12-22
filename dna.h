@@ -24,6 +24,7 @@ class DNA {
 		uint64_t _score;
 };
 
+bool operator<(const DNA&, const DNA&);
 bool operator==(const DNA&, const DNA&);
 bool operator!=(const DNA&, const DNA&);
 

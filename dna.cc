@@ -30,6 +30,10 @@ void DNA::setScore(uint64_t v) {
 	_score = v;
 }
 
+bool operator<(const DNA& a, const DNA& b) {
+	return a.score() < b.score();
+}
+
 bool operator==(const DNA& a, const DNA& b) {
 	if (a.num() != b.num()) {
 		return false;
