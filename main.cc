@@ -108,5 +108,8 @@ int main(void) {
 	IMG_SavePNG("best.png", cs, 9);
 	saveState("state.xml", h, c);
 
+	SDL_FreeSurface(cs);
+	SDL_FreeSurface(ts);
+
 	return 0;
 }
