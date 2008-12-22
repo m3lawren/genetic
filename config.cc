@@ -2,7 +2,8 @@
 
 #include <cassert>
 
-Config::Config() {
+Config::Config() 
+	: _whiteBG(false), _w(0), _h(0), _mpsz(40) {
 }
 
 Config::~Config() {
