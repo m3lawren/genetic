@@ -12,9 +12,7 @@ class DNA {
 		~DNA();
 
 		size_t num() const;
-		Polygon& poly(size_t);
-
-		Polygon& operator[](size_t);
+		const Polygon& operator[](size_t) const;
 
 	private:
 		DNA(const DNA&);
