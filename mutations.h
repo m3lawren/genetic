@@ -3,6 +3,8 @@
 
 #include <dna.h>
 
-DNA mutationAddPolygon(const DNA&);
+struct Config;
+
+DNA mutationAddPolygon(const DNA&, const Config&);
 
 #endif
