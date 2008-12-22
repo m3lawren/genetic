@@ -3,7 +3,7 @@ extrasIMG = Dir('extras/IMG')
 extrasTinyxml = Dir('extras/tinyxml')
 pwd = Dir('.')
 
-env = Environment(CCFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic -DTIXML_USE_STL', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
+env = Environment(CCFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
 
 SConscript('extras/SConscript')
 

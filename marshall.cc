@@ -2,6 +2,8 @@
 
 #include <config.h>
 #include <history.h>
+
+#define TIXML_USE_STL
 #include <tinyxml.h>
 
 TiXmlElement* saveColour(struct Colour c) {
