@@ -1,6 +1,9 @@
 #include <graphics.h>
+#include <dna.h>
 
 #include <iostream>
+
+#include <SDL_gfxPrimitives.h>
 
 SDL_Surface* createSurface(Uint32 width, Uint32 height) { 
 	Uint32 rmask, gmask, bmask, amask;
@@ -26,4 +29,16 @@ SDL_Surface* createSurface(Uint32 width, Uint32 height) {
 	}
 
 	return s;
+}
+
+Uint32 colourToInt(struct Colour c) {
+	Uint32 r = c.r, g = c.g, b = c.b, a = c.a;
+	return ((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | (a & 0xff);
+}
+
+void renderDNA(SDL_Surface* s, const DNA& d) {
+	rectangleColor(s, 0, 0, s->w, s->h, 0x000000ff);		
+	for (size_t i = 0; i < d.num(); i++) {
+		polygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
+	}
 }
