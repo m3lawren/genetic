@@ -81,7 +81,7 @@ int main(void) {
 		x++;
 		nc++;
 
-		if (nc > 30 + d.num() / 2 && nc % 2 == 0 && d.num() < c.maxPolygons()) {
+		if (nc > 30 + d.num() && nc % 2 == 0 && d.num() < c.maxPolygons()) {
 			cand = mutationAddPolygon(d, c);
 		} else {
 			do { 
