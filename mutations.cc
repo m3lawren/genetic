@@ -25,11 +25,11 @@ inline int32_t min(int32_t a, int32_t b) {
 /* generates an int x s.t. a <= x <= b */
 int32_t randrange(int32_t a, int32_t b) {
 	assert(a <= b);
-	assert(b - a <= RAND_MAX);
+	assert(b + 1 - a <= RAND_MAX);
 	if (a == b) {
 		return a;
 	}
-	return (::rand() % (b - a)) + a;
+	return (::rand() % (b + 1 - a)) + a;
 }
 
 typedef DNA (*mutation_t)(const DNA&, const Config&);
