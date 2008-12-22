@@ -135,8 +135,8 @@ DNA mutationVertexAdd(const DNA& d, const Config& c) {
 
 	double location = (double)rand() / (double)RAND_MAX;
 	int vert = randrange(0, p1.num() - 1);
-	int16_t x0 = location * (double)p1.x()[vert] + (1.0 - location) * (double)p1.x()[(vert + 1) % p1.num()] + randrange(-1, 1);
-	int16_t y0 = location * (double)p1.y()[vert] + (1.0 - location) * (double)p1.y()[(vert + 1) % p1.num()] + randrange(-1, 1);
+	int16_t x0 = (int16_t)(location * (double)p1.x()[vert] + (1.0 - location) * (double)p1.x()[(vert + 1) % p1.num()] + randrange(-1, 1));
+	int16_t y0 = (int16_t)(location * (double)p1.y()[vert] + (1.0 - location) * (double)p1.y()[(vert + 1) % p1.num()] + randrange(-1, 1));
 	int16_t* x = new int16_t[p1.num() + 1];
 	int16_t* y = new int16_t[p1.num() + 1];
 	vert++;
