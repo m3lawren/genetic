@@ -5,6 +5,7 @@
 
 struct Config;
 
+DNA mutate(const DNA&, const Config&);
 DNA mutationAddPolygon(const DNA&, const Config&);
 
 #endif
