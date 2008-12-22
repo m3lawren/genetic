@@ -125,6 +125,8 @@ int main(int argc, char** argv) {
 
 	init_locale();
 
+	::srand(::time(NULL));
+
 	loadState("state.xml", h, c);
 
 	parseOpts(argc, argv, c);
@@ -165,10 +167,10 @@ int main(int argc, char** argv) {
 		if (cand < d) {
 			d = cand;
 			h.update(d, x);
-			if (time(NULL) - lastwrite > 5) {
+			if (::time(NULL) - lastwrite > 5) {
 				IMG_SavePNG("best.png", cs, 9);
 				saveState("state.xml", h, c);
-				lastwrite = time(NULL);
+				lastwrite = ::time(NULL);
 			}
 			std::cout << "Replaced current with candidate. (NC: " << std::setw(4) << nc 
 			          << ", Score: " << std::setw(13) << d.score() 
