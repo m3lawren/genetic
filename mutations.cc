@@ -202,7 +202,7 @@ DNA _mutationColour(const DNA& d, uint32_t whichp, uint32_t idx, int32_t minv, i
 	std::vector<Polygon> p(d.polygons());
 	Polygon p1(p[whichp]);
 	uint8_t* v = NULL;
-	Colour c;
+	Colour c = p1.colour();
 	if (idx == 0) {
 		v = &c.r;
 	} else if (idx == 1) {
@@ -220,6 +220,8 @@ DNA _mutationColour(const DNA& d, uint32_t whichp, uint32_t idx, int32_t minv, i
 		*v = minv;
 	} else if ((int32_t)*v > maxv - change) {
 		*v = maxv;
+	} else {
+		*v += change;
 	}
 
 	p[whichp] = Polygon(p1.num(), p1.x(), p1.y(), c);
