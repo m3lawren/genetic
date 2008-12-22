@@ -13,6 +13,7 @@ struct Colour {
 
 class Polygon {
 	public:
+		Polygon();
 		Polygon(size_t num, const int16_t* x, const int16_t* y, struct Colour colour);
 		Polygon(const Polygon&);
 

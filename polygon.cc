@@ -2,6 +2,9 @@
 
 #include <cstring>
 
+Polygon::Polygon() : _num(0), _x(NULL), _y(NULL) {
+}
+
 Polygon::Polygon(size_t num, const int16_t* x, const int16_t* y, struct Colour colour) 
 	: _num(num), _colour(colour) {
 	_x = new int16_t[_num];

@@ -14,15 +14,25 @@ void init_locale(void) {
 	std::cin.imbue(loc);
 }
 
+std::ostream& operator<<(std::ostream& s, const Config& c) {
+	return s << "Config:" << std::endl
+	         << "  WhiteBackground: " << c.whiteBG() << std::endl
+	         << "  Width:           " << c.width() << std::endl
+	         << "  Height:          " << c.height() << std::endl
+	         << "  MaxPolySize:     " << c.maxPolySize() << std::endl;
+}
+
 int main(void) { 
 //	init_locale();
 
-	Config c;
-	History h;
+	Config c, c1;
+	History h, h1;
 	DNA d;
 
+	c.setWhiteBG(true);
 	c.setWidth(100);
-	c.setHeight(100);
+	c.setHeight(101);
+	c.setMaxPolySize(1000);
 
 	d = mutationAddPolygon(d, c);
 	h.update(d);
@@ -33,7 +43,9 @@ int main(void) {
 	d = mutationAddPolygon(d, c);
 	h.update(d);
 
-	saveState(h, c);
+	saveState("state.xml", h, c);
+	loadState("state.xml", h1, c1);
+	saveState("state2.xml", h1, c1);
 
 	return 0;
 }
