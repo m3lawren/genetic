@@ -45,3 +45,25 @@ void renderDNA(SDL_Surface* s, const DNA& d, const Config& c) {
 		polygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
 	}
 }
+
+void getRGBA(const SDL_Surface* s, uint64_t idx, uint32_t* r, uint32_t* g, uint32_t* b, uint32_t* a) {
+	Uint8 r1, g1, b1, a1;
+	SDL_GetRGBA(((Uint32*)s->pixels)[idx], s->format, &r1, &g1, &b1, &a1);
+	*r = r1;
+	*g = g1;
+	*b = b1;
+	*a = a1;
+}
+
+uint64_t calcScore(const SDL_Surface* a, const SDL_Surface* b) {
+	uint64_t sc = 0;
+	assert(a->w == b->w && a->h == b->h);
+	for (int64_t idx = 0; idx < a->w * a->h; idx++) {
+		uint32_t r1, g1, b1, a1;
+		uint32_t r2, g2, b2, a2;
+		getRGBA(a, idx, &r1, &g1, &b1, &a1);
+		getRGBA(b, idx, &r2, &g2, &b2, &a2);
+		sc += (r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1) + (a2 - a1) * (a2 - a1);
+	}
+	return sc;
+}

@@ -8,5 +8,6 @@ class DNA;
 SDL_Surface* createSurface(Uint32 width, Uint32 height);
 
 void renderDNA(SDL_Surface*, const DNA&);
+uint64_t calcScore(const SDL_Surface* a, const SDL_Surface* b);
 
 #endif
