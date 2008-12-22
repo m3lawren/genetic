@@ -20,6 +20,12 @@ Polygon::Polygon(const Polygon& other)
 }
 
 Polygon::~Polygon() {
+	if (_x) {
+		delete[] _x;
+	}
+	if (_y) {
+		delete[] _y;
+	}
 }
 
 Polygon& Polygon::operator=(const Polygon& rhs) { 

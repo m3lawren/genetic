@@ -154,6 +154,8 @@ void loadPolygon(const TiXmlElement* e, std::vector<Polygon>& polys) {
 	}
 
 	polys[idx] = Polygon(n, x, y, c);
+	delete[] x;
+	delete[] y;
 }
 
 int loadDNA(const TiXmlElement* e, DNA& d) {
