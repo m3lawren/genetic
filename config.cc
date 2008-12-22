@@ -4,7 +4,7 @@
 
 Config::Config() 
 	: _whiteBG(false), _w(0), _h(0), 
-	  _mpsz(40), _dcr(5), _md(8),
+	  _mp(150), _mpsz(40), _dcr(5), _md(8),
 	  _mxa(255), _mna(15), _dcl(15) {
 }
 
