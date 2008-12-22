@@ -10,15 +10,20 @@ size_t History::num() const {
 	return _g.size();
 }
 
-const DNA& History::operator[](size_t idx) const {
-	return _g[idx];
+const DNA& History::dna(size_t idx) const {
+	return _g[idx].first;
 }
 
-size_t History::update(const DNA& d) {
-	if (num() == 0 || d.num() != _g.back().num()) {
-		_g.push_back(d);
+uint64_t History::iter(size_t idx) const {
+	return _g[idx].second;
+}
+
+size_t History::update(const DNA& d, uint64_t iter) {
+	std::pair<DNA, uint64_t> p(d, iter);
+	if (num() == 0 || d.num() != _g.back().first.num()) {
+		_g.push_back(p);
 	} else {
-		_g.back() = d;
+		_g.back() = p;
 	}
 	return num();
 }

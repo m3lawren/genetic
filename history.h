@@ -3,18 +3,21 @@
 
 #include <dna.h>
 
+#include <utility>
+
 class History {
 	public:
 		History();
 		~History();
 
 		size_t num() const;
-		const DNA& operator[](size_t) const;
+		const DNA& dna(size_t) const;
+		uint64_t iter(size_t) const;
 
-		size_t update(const DNA&);
+		size_t update(const DNA&, uint64_t iter);
 
 	private:
-		std::vector<DNA> _g;
+		std::vector<std::pair<DNA, uint64_t> > _g;
 };
 
 #endif

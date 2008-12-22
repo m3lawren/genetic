@@ -1,4 +1,5 @@
 #include <fstream>
+#include <locale>
 
 #include <config.h>
 #include <history.h>
@@ -51,7 +52,12 @@ TiXmlElement* saveDNA(const DNA& d) {
 TiXmlElement* saveEntry(const History& h, uint32_t eidx) {
 	TiXmlElement* e = new TiXmlElement("Entry");
 	e->SetAttribute("Order", eidx);
-	e->LinkEndChild(saveDNA(h[eidx]));
+	{
+		std::ostringstream s;
+		s << h.iter(eidx);
+		e->SetAttribute("Iteration", s.str());
+	}
+	e->LinkEndChild(saveDNA(h.dna(eidx)));
 	return e;
 }
 
@@ -187,10 +193,18 @@ int loadDNA(const TiXmlElement* e, DNA& d) {
 	return 0;
 }
 
-void loadEntry(const TiXmlElement* e, std::vector<DNA>& entries) {
+void loadEntry(const TiXmlElement* e, std::vector<std::pair<DNA, uint64_t> >& entries) {
 	int order;
 	if (TIXML_SUCCESS != e->QueryIntAttribute("Order", &order) || order < 0 || order >= (int)entries.size()) {
 		return;
+	}
+	const char* siter = e->Attribute("Iteration");
+	uint64_t iter;
+	if (!siter) {
+		return;
+	} else {
+		std::istringstream ss(siter);
+		ss >> iter;
 	}
 
 	const TiXmlElement* child;
@@ -198,14 +212,14 @@ void loadEntry(const TiXmlElement* e, std::vector<DNA>& entries) {
 		if (child->ValueStr() == "DNA") {
 			DNA d;
 			if (!loadDNA(child, d)) {
-				entries[order] = d;
+				entries[order] = std::pair<DNA, uint64_t>(d, iter);
 			}
 		}
 	}
 }
 
 void loadHistory(const TiXmlElement* e, History& h) {
-	std::vector<DNA> entries;
+	std::vector<std::pair<DNA, uint64_t> > entries;
 	int t;
 	if (TIXML_SUCCESS == e->QueryIntAttribute("NumEntries", &t) && t >= 0) {
 		entries.resize(t);
@@ -221,7 +235,7 @@ void loadHistory(const TiXmlElement* e, History& h) {
 	}
 
 	for (uint32_t idx = 0; idx < entries.size(); idx++) {
-		h.update(entries[idx]);
+		h.update(entries[idx].first, entries[idx].second);
 	}
 }
 

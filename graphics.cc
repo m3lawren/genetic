@@ -59,9 +59,9 @@ Uint32 colourToInt(struct Colour c) {
 void renderDNA(SDL_Surface* s, const DNA& d, const Config& c) {
 	Uint32 bg = c.whiteBG() ? 0xffffffff : 0x000000ff;
 	assert(c.width() == s->w && c.height() == s->h);
-	rectangleColor(s, 0, 0, s->w, s->h, bg);	/* SDL_FillRect? */
+	boxColor(s, 0, 0, s->w - 1, s->h - 1, bg);	/* SDL_FillRect? */
 	for (size_t i = 0; i < d.num(); i++) {
-		polygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
+		filledPolygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
 	}
 }
 

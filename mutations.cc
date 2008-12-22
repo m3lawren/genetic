@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <iostream>
+
 template<class T> void swap(T& a, T& b) {
 	T tmp = a;
 	a = b;
@@ -32,6 +34,9 @@ int32_t randrange(int32_t a, int32_t b) {
 
 typedef DNA (*mutation_t)(const DNA&, const Config&);
 static std::vector<mutation_t> mutations;
+static std::vector<std::string> names;
+
+#define REGISTER_MUT(x) {mutations.push_back(x); names.push_back(#x);}
 
 DNA mutationAddPolygon(const DNA& d, const Config& c) {
 	std::vector<Polygon> p(d.polygons());
@@ -184,9 +189,9 @@ DNA _mutationShift(const DNA& d, uint32_t whichp, uint32_t idx, bool x, int32_t 
 	} else if (newv > maxv) {
 		newv = maxv;
 	}
-	
+
 	int16_t* v = new int16_t[p1.num()];
-	::memcpy(v, (x?p1.x():p1.y()), p1.num());
+	::memcpy(v, (x?p1.x():p1.y()), p1.num() * sizeof(int16_t));
 	v[idx] = newv;
 	p[whichp] = Polygon(p1.num(), (x?v:p1.x()), (x?p1.y():v), p1.colour());
 	delete[] v;
@@ -240,14 +245,14 @@ DNA mutationColourShift(const DNA& d, const Config& c) {
 }
 
 void initMutations() {
-	mutations.push_back(mutationSwap);
-	mutations.push_back(mutationDelete);
-	mutations.push_back(mutationVertexSwap);
-	mutations.push_back(mutationVertexDelete);
-	mutations.push_back(mutationVertexAdd);
-	mutations.push_back(mutationVertexReplace);
-	mutations.push_back(mutationPhysicalShift);
-	mutations.push_back(mutationColourShift);
+	REGISTER_MUT(mutationSwap);
+	REGISTER_MUT(mutationDelete);
+	REGISTER_MUT(mutationVertexSwap);
+	REGISTER_MUT(mutationVertexDelete);
+	REGISTER_MUT(mutationVertexAdd);
+	REGISTER_MUT(mutationVertexReplace);
+	REGISTER_MUT(mutationPhysicalShift);
+	REGISTER_MUT(mutationColourShift);
 }
 
 DNA mutate(const DNA& d, const Config& c) {
