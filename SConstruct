@@ -8,9 +8,11 @@ env = Environment(CCFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags` -std=c
 SConscript('extras/SConscript')
 
 sources = [
+	'config.cc',
 	'dna.cc',
 	'graphics.cc',
 	'main.cc',
+	'mutations.cc',
 	'polygon.cc',
 ]
 
