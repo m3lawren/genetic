@@ -33,6 +33,11 @@ int main(void) {
 	c.setWidth(100);
 	c.setHeight(101);
 	c.setMaxPolySize(1000);
+	c.setDeltaCoord(77);
+	c.setMaxDegree(78);
+	c.setMaxAlpha(100);
+	c.setMinAlpha(1);
+	c.setDeltaColour(11);
 
 	d = mutationAddPolygon(d, c);
 	d.setScore(1000);
