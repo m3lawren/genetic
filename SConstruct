@@ -11,6 +11,7 @@ sources = [
 	'config.cc',
 	'dna.cc',
 	'graphics.cc',
+	'history.cc',
 	'main.cc',
 	'mutations.cc',
 	'polygon.cc',
