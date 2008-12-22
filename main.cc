@@ -1,8 +1,10 @@
 #include <cassert>
 #include <csignal>
 #include <ctime>
+#include <getopt.h>
 #include <iostream>
 #include <locale>
+#include <sstream>
 
 #include <config.h>
 #include <graphics.h>
@@ -47,7 +49,72 @@ void dump(const DNA& d) {
 	}
 }
 
-int main(void) { 
+void usage() {
+	Config c;
+	std::cerr << "genetic [options]" << std::endl
+	          << "  --black-bg, -b              Use a black background (default)." << std::endl
+				 << "  --white-bg, -w              Use a white background." << std::endl
+				 << "  --max-polygons, -p <num>    Set the maximum number of polygons (default: " << c.maxPolygons() << ")" << std::endl
+				 << "  --max-poly-size, -s <num>   Set the maximum polygon size (default: " << c.maxPolySize() << ")" << std::endl
+				 << "  --max-degree, -d <num>      Set the maximum degree of a polygon (default: " << c.maxDegree() << ")" << std::endl;
+}
+
+void parseOpts(int argc, char** argv, Config& c) {
+	struct option longopts[] = {
+		{"black-bg", 0, 0, 'b'},
+		{"white-bg", 0, 0, 'w'},
+		{"max-polygons", 1, 0, 'p'},
+		{"max-poly-size", 1, 0, 's'},
+		{"max-degree", 1, 0, 'd'},
+		{"help", 0, 0, 'h'},
+		{0, 0, 0, 0}
+	};
+	while (true) {
+		int j = getopt_long(argc, argv, "bwp:s:d:h", longopts, NULL);
+		std::istringstream s;
+		if (j == -1) {
+			break;
+		}
+		switch (j) {
+			case 'w':
+				c.setWhiteBG(true);
+				break;
+			case 'b':
+				c.setWhiteBG(false);
+				break;
+			case 'p':
+			{
+				uint32_t v = c.maxPolygons();
+				s.str(optarg);
+				s >> v;
+				c.setMaxPolygons(v);
+				break;
+			}
+			case 's':
+			{
+				int32_t v = c.maxPolySize();
+				s.str(optarg);
+				s >> v;
+				c.setMaxPolySize(v);
+				break;
+			}
+			case 'd':
+			{
+				int32_t v = c.maxDegree();
+				s.str(optarg);
+				s >> v;
+				c.setMaxPolySize(v);
+				break;
+			}
+			case 'h':
+			default:
+				usage();
+				::exit(1);
+		}
+	}
+}
+
+int main(int argc, char** argv) { 
 	Config c; 
 	History h;
 	DNA d;
@@ -58,6 +125,8 @@ int main(void) {
 	init_locale();
 
 	loadState("state.xml", h, c);
+
+	parseOpts(argc, argv, c);
 
 	SDL_Surface* ts = loadRGBA("target.jpg");
 
