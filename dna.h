@@ -9,15 +9,14 @@
 class DNA {
 	public:
 		DNA();
+		DNA(const std::vector<Polygon>&);
 		~DNA();
 
 		size_t num() const;
 		const Polygon& operator[](size_t) const;
+		const std::vector<Polygon>& polygons() const;
 
 	private:
-		DNA(const DNA&);
-		DNA& operator=(const DNA&);
-
 		std::vector<Polygon> _polys;
 };
 
