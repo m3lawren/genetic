@@ -2,6 +2,7 @@
 #include <csignal>
 #include <ctime>
 #include <getopt.h>
+#include <iomanip>
 #include <iostream>
 #include <locale>
 #include <sstream>
@@ -169,7 +170,11 @@ int main(int argc, char** argv) {
 				saveState("state.xml", h, c);
 				lastwrite = time(NULL);
 			}
-			std::cout << "Replaced current with candidate. (NC: " << nc << ", Score: " << d.score() << ", Iter: " << x << ", Poly: " << d.num() << ")" << std::endl;
+			std::cout << "Replaced current with candidate. (NC: " << std::setw(4) << nc 
+			          << ", Score: " << std::setw(13) << d.score() 
+						 << ", Iter: " << std::setw(7) << x 
+						 << ", Poly: " << d.num() 
+						 << ", Mut: " << d.lastMutation() << ")" << std::endl;
 			nc = 0;
 		}
 	}

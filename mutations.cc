@@ -262,6 +262,8 @@ DNA mutate(const DNA& d, const Config& c) {
 		initMutations();
 	}
 	int which = randrange(0, mutations.size() - 1);
-	return mutations[which](d, c);
+	DNA newd = mutations[which](d, c);
+	newd.setLastMutation(names[which]);
+	return newd;
 }
 
