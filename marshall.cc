@@ -37,6 +37,11 @@ TiXmlElement* savePolygon(const Polygon& p, uint32_t pidx) {
 TiXmlElement* saveDNA(const DNA& d) {
 	TiXmlElement* e = new TiXmlElement("DNA");
 	e->SetAttribute("NumPolygons", d.num());
+	{
+		std::ostringstream s;
+		s << d.score();
+		e->SetAttribute("Score", s.str());
+	}
 	for (uint32_t idx = 0; idx < d.num(); idx++) {
 		e->LinkEndChild(savePolygon(d[idx], idx));
 	}
@@ -161,6 +166,14 @@ int loadDNA(const TiXmlElement* e, DNA& d) {
 		polys.resize(t);
 	} else {
 		return 1;
+	}
+
+	const char* s = e->Attribute("Score");
+	if (s) {
+		std::istringstream is(s);
+		uint64_t sc;
+		is >> sc;
+		d.setScore(sc);
 	}
 
 	const TiXmlElement* child;
