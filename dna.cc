@@ -1,10 +1,10 @@
 #include <dna.h>
 
-DNA::DNA() {
+DNA::DNA() : _score((uint64_t)-1) {
 }
 
 DNA::DNA(const std::vector<Polygon>& p) 
-	: _polys(p) {
+	: _polys(p), _score((uint64_t)-1) {
 }
 		
 DNA::~DNA() {
