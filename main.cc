@@ -149,6 +149,8 @@ int main(int argc, char** argv) {
 	time_t lastwrite = 0;
 	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
+	renderDNA(cs, d, c);
+	d.setScore(calcScore(cs, ts));
 	while (running) {
 		x++;
 		nc++;
