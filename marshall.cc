@@ -126,19 +126,14 @@ void loadPolygon(const TiXmlElement* e, std::vector<Polygon>& polys) {
 	struct Colour c;
 	c.r = c.g = c.b = c.a = 0;
 
-	if (TIXML_SUCCESS == e->QueryIntAttribute("Order", &idx)) {
-		if (idx < 0 || idx >= (int)polys.size()) {
-			return;
-		}
-	} else {
+	if (TIXML_SUCCESS != e->QueryIntAttribute("Order", &idx) || idx < 0 || idx >= (int)polys.size()) {
 		return;
 	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("NumVertices", &n)) {
-		if (n < 0) { 
-			return;
-		}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("NumVertices", &n) && n >= 3) {
 		x = new int16_t[n];
 		y = new int16_t[n];
+	} else {
+		return;
 	}
 	
 	const TiXmlElement* child;
@@ -158,11 +153,9 @@ void loadPolygon(const TiXmlElement* e, std::vector<Polygon>& polys) {
 
 int loadDNA(const TiXmlElement* e, DNA& d) {
 	int t;
+	uint64_t sc;
 	std::vector<Polygon> polys;
-	if (TIXML_SUCCESS == e->QueryIntAttribute("NumPolygons", &t)) {
-		if (t < 0) {
-			return 1;
-		}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("NumPolygons", &t) && t >= 0) {
 		polys.resize(t);
 	} else {
 		return 1;
@@ -171,7 +164,6 @@ int loadDNA(const TiXmlElement* e, DNA& d) {
 	const char* s = e->Attribute("Score");
 	if (s) {
 		std::istringstream is(s);
-		uint64_t sc;
 		is >> sc;
 		d.setScore(sc);
 	}
@@ -183,16 +175,13 @@ int loadDNA(const TiXmlElement* e, DNA& d) {
 		}
 	}
 	d = DNA(polys);
+	d.setScore(sc);
 	return 0;
 }
 
 void loadEntry(const TiXmlElement* e, std::vector<DNA>& entries) {
 	int order;
-	if (TIXML_SUCCESS == e->QueryIntAttribute("Order", &order)) {
-		if (order < 0 || order >= (int)entries.size()) {
-			return;
-		}
-	} else {
+	if (TIXML_SUCCESS != e->QueryIntAttribute("Order", &order) || order < 0 || order >= (int)entries.size()) {
 		return;
 	}
 
@@ -210,10 +199,7 @@ void loadEntry(const TiXmlElement* e, std::vector<DNA>& entries) {
 void loadHistory(const TiXmlElement* e, History& h) {
 	std::vector<DNA> entries;
 	int t;
-	if (TIXML_SUCCESS == e->QueryIntAttribute("NumEntries", &t)) {
-		if (t < 0) {
-			return;
-		}
+	if (TIXML_SUCCESS == e->QueryIntAttribute("NumEntries", &t) && t >= 0) {
 		entries.resize(t);
 	} else {
 		return;
@@ -236,13 +222,13 @@ void loadConfig(const TiXmlElement* e, Config& c) {
 	if (TIXML_SUCCESS == e->QueryIntAttribute("WhiteBackground", &t)) {
 		c.setWhiteBG(t != 0);
 	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("Width", &t)) {
+	if (TIXML_SUCCESS == e->QueryIntAttribute("Width", &t) && t > 0) {
 		c.setWidth(t);
 	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("Height", &t)) {
+	if (TIXML_SUCCESS == e->QueryIntAttribute("Height", &t) && t > 0) {
 		c.setHeight(t);
 	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolySize", &t)) {
+	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolySize", &t) && t > 0) {
 		c.setMaxPolySize(t);
 	}
 }

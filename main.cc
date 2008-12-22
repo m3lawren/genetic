@@ -35,12 +35,15 @@ int main(void) {
 	c.setMaxPolySize(1000);
 
 	d = mutationAddPolygon(d, c);
+	d.setScore(1000);
 	h.update(d);
 
 	d = mutationAddPolygon(d, c);
+	d.setScore(998);
 	h.update(d);
 	
 	d = mutationAddPolygon(d, c);
+	d.setScore(0);
 	h.update(d);
 
 	saveState("state.xml", h, c);
