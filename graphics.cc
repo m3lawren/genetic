@@ -4,9 +4,11 @@
 
 #include <cassert>
 #include <iostream>
-#include <SDL_gfxPrimitives.h>
 
-SDL_Surface* createSurface(Uint32 width, Uint32 height) { 
+#include <SDL_gfxPrimitives.h>
+#include <SDL_image.h>
+
+SDL_Surface* createSurface(int32_t width, int32_t height) { 
 	Uint32 rmask, gmask, bmask, amask;
 	SDL_Surface* s;
 
@@ -32,6 +34,23 @@ SDL_Surface* createSurface(Uint32 width, Uint32 height) {
 	return s;
 }
 
+SDL_Surface* loadRGBA(const char* f) {
+	SDL_Surface* l;
+	SDL_Surface* s;
+
+	l = IMG_Load(f);
+	if (!l) {
+		std::cerr << "IMG_Load failed: " << SDL_GetError() << std::endl;
+		::exit(1);
+	}
+
+	s = createSurface(l->w, l->h);
+	SDL_BlitSurface(l, NULL, s, NULL);
+	
+	SDL_FreeSurface(l);
+	return s;
+}
+
 Uint32 colourToInt(struct Colour c) {
 	Uint32 r = c.r, g = c.g, b = c.b, a = c.a;
 	return ((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | (a & 0xff);
@@ -40,7 +59,7 @@ Uint32 colourToInt(struct Colour c) {
 void renderDNA(SDL_Surface* s, const DNA& d, const Config& c) {
 	Uint32 bg = c.whiteBG() ? 0xffffffff : 0x000000ff;
 	assert(c.width() == s->w && c.height() == s->h);
-	rectangleColor(s, 0, 0, s->w, s->h, bg);		
+	rectangleColor(s, 0, 0, s->w, s->h, bg);	/* SDL_FillRect? */
 	for (size_t i = 0; i < d.num(); i++) {
 		polygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
 	}
