@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
 		x++;
 		nc++;
 
-		if (nc > 30 + d.num() && nc % 2 == 0 && d.num() < c.maxPolygons()) {
+		if (nc > 100 + d.num() && nc % 2 == 0 && d.num() < c.maxPolygons()) {
 			cand = mutationAddPolygon(d, c);
 		} else {
 			do { 
