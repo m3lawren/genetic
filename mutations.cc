@@ -68,7 +68,7 @@ DNA mutationSwap(const DNA& d, const Config&) {
 	int src = randrange(0, p.size() - 1);
 	int dest = randrange(0, p.size() - 1);
 	if (src == dest) {
-		return d;
+		dest = (src + 1) % p.size();
 	}
 
 	swap(p[src], p[dest]);
@@ -79,11 +79,19 @@ DNA mutationSwap(const DNA& d, const Config&) {
 DNA mutationVertexSwap(const DNA& d, const Config&) {
 	std::vector<Polygon> p(d.polygons());
 	int which = randrange(0, p.size() - 1);
-	Polygon p1 = p[which];
-	if (p1.num() <= 3) {
-		return d;
+	int owhich = which;
+	while (true) {
+		if (p[which].num() > 3) {
+			break;
+		}
+		which++;
+		which %= p.size();
+		if (which == owhich) {
+			return d;
+		}
 	}
 
+	Polygon p1(p[which]);
 	int16_t* x = new int16_t[p1.num()];
 	int16_t* y = new int16_t[p1.num()];
 	::memcpy(x, p1.x(), p1.num() * sizeof(int16_t));
@@ -106,11 +114,19 @@ DNA mutationVertexSwap(const DNA& d, const Config&) {
 DNA mutationVertexDelete(const DNA& d, const Config&) {
 	std::vector<Polygon> p(d.polygons());
 	int which = randrange(0, p.size() - 1);
-	Polygon p1 = p[which];
-	if (p1.num() <= 3) {
-		return d;
+	int owhich = which;
+	while (true) {
+		if (p[which].num() > 3) {
+			break;
+		}
+		which++;
+		which %= p.size();
+		if (which == owhich) {
+			return d;
+		}
 	}
 
+	Polygon p1(p[which]);
 	int vert = randrange(0, p1.num() - 1);
 	int16_t* x = new int16_t[p1.num() - 1];
 	int16_t* y = new int16_t[p1.num() - 1];
@@ -128,11 +144,16 @@ DNA mutationVertexDelete(const DNA& d, const Config&) {
 DNA mutationVertexAdd(const DNA& d, const Config& c) {
 	std::vector<Polygon> p(d.polygons());
 	int which = randrange(0, p.size() - 1);
-	Polygon p1 = p[which];
-	if (p1.num() >= c.maxDegree()) {
-		return d;
-	}
+	int owhich = which;
+	do {
+		if (p[which].num() < c.maxDegree()) {
+			break;
+		}
+		which++;
+		which %= p.size();
+	} while (which != owhich);
 
+	Polygon p1(p[which]);
 	double location = (double)rand() / (double)RAND_MAX;
 	int vert = randrange(0, p1.num() - 1);
 	int16_t x0 = (int16_t)(location * (double)p1.x()[vert] + (1.0 - location) * (double)p1.x()[(vert + 1) % p1.num()] + randrange(-1, 1));
