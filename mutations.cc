@@ -163,6 +163,8 @@ DNA mutationVertexAdd(const DNA& d, const Config& c) {
 	int16_t y0 = (int16_t)(location * (double)p1.y()[vert] + (1.0 - location) * (double)p1.y()[(vert + 1) % p1.num()] + randrange(-1, 1));
 	int16_t* x = new int16_t[p1.num() + 1];
 	int16_t* y = new int16_t[p1.num() + 1];
+	x0 = min(max(x0, 0), c.width() - 1);
+	y0 = min(max(y0, 0), c.height() - 1);
 	vert++;
 	vert %= p1.num();
 	::memcpy(x, p1.x(), vert * sizeof(int16_t));
