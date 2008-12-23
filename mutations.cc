@@ -157,7 +157,7 @@ DNA mutationVertexAdd(const DNA& d, const Config& c) {
 DNA mutationVertexReplace(const DNA& d, const Config& c) {
 	DNA result;
 	result = mutationVertexDelete(d, c);
-	if (result.num() == 0) {
+	if (result == d) {
 		result = mutationVertexAdd(d, c);
 		result = mutationVertexDelete(result, c);
 	} else {
