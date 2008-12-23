@@ -9,12 +9,12 @@ class Config {
 		~Config();
 
 		bool     whiteBG() const;
-		int32_t  width() const;
-		int32_t  height() const;
+		uint32_t width() const;
+		uint32_t height() const;
 
 		uint32_t maxPolygons() const;
-		int32_t  maxPolySize() const;
-		int32_t  deltaCoord() const;
+		uint32_t maxPolySize() const;
+		uint32_t deltaCoord() const;
 		uint32_t maxDegree() const;
 
 		uint8_t  maxAlpha() const;
@@ -22,12 +22,12 @@ class Config {
 		uint8_t  deltaColour() const;
 
 		void setWhiteBG(bool);
-		void setWidth(int32_t);
-		void setHeight(int32_t);
+		void setWidth(uint32_t);
+		void setHeight(uint32_t);
 
 		void setMaxPolygons(uint32_t);
-		void setMaxPolySize(int32_t);
-		void setDeltaCoord(int32_t);
+		void setMaxPolySize(uint32_t);
+		void setDeltaCoord(uint32_t);
 		void setMaxDegree(uint32_t);
 
 		void setMaxAlpha(uint8_t);
@@ -39,12 +39,12 @@ class Config {
 		Config& operator=(const Config&);
 
 		bool _whiteBG;
-		int32_t _w;
-		int32_t _h;
+		uint32_t _w;
+		uint32_t _h;
 
 		uint32_t _mp;
-		int32_t _mpsz;
-		int32_t _dcr;
+		uint32_t _mpsz;
+		uint32_t _dcr;
 		uint32_t _md;
 
 		uint8_t _mxa;

@@ -58,31 +58,20 @@ Uint32 colourToInt(struct Colour c) {
 
 void renderDNA(SDL_Surface* s, const DNA& d, const Config& c) {
 	Uint32 bg = c.whiteBG() ? 0xffffffff : 0x000000ff;
-	assert(c.width() == s->w && c.height() == s->h);
+	assert(c.width() == (uint32_t)s->w && c.height() == (uint32_t)s->h);
 	boxColor(s, 0, 0, s->w - 1, s->h - 1, bg);	/* SDL_FillRect? */
 	for (size_t i = 0; i < d.num(); i++) {
 		filledPolygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
 	}
 }
 
-void getRGBA(const SDL_Surface* s, uint64_t idx, uint32_t* r, uint32_t* g, uint32_t* b, uint32_t* a) {
-	Uint8 r1, g1, b1, a1;
-	SDL_GetRGBA(((Uint32*)s->pixels)[idx], s->format, &r1, &g1, &b1, &a1);
-	*r = r1;
-	*g = g1;
-	*b = b1;
-	*a = a1;
-}
-
 uint64_t calcScore(const SDL_Surface* a, const SDL_Surface* b) {
 	uint64_t sc = 0;
-	assert(a->w == b->w && a->h == b->h);
-	for (int64_t idx = 0; idx < a->w * a->h; idx++) {
-		uint32_t r1, g1, b1, a1;
-		uint32_t r2, g2, b2, a2;
-		getRGBA(a, idx, &r1, &g1, &b1, &a1);
-		getRGBA(b, idx, &r2, &g2, &b2, &a2);
-		sc += (r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1) + (a2 - a1) * (a2 - a1);
+	uint8_t* p1 = (uint8_t*)a->pixels;
+	uint8_t* p2 = (uint8_t*)b->pixels;
+	assert(a->format->BitsPerPixel == b->format->BitsPerPixel);
+	for (int64_t idx = 0; idx < 4 * a->w * a->h; idx++) {
+		sc += ((uint32_t)p1[idx] - (uint32_t)p2[idx]) * ((uint32_t)p1[idx] - (uint32_t)p2[idx]);
 	}
 	return sc;
 }
