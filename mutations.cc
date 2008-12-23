@@ -151,6 +151,9 @@ DNA mutationVertexAdd(const DNA& d, const Config& c) {
 		}
 		which++;
 		which %= p.size();
+		if (which == owhich) {
+			return d;
+		}
 	} while (which != owhich);
 
 	Polygon p1(p[which]);
