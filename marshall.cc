@@ -7,6 +7,8 @@
 #define TIXML_USE_STL
 #include <tinyxml.h>
 
+//#define USE_TIXML_BUILTIN
+#ifdef USE_TIXML_BUILTIN
 TiXmlElement* saveColour(struct Colour c) {
 	TiXmlElement* e = new TiXmlElement("Colour");
 	e->SetAttribute("R", c.r);
@@ -93,6 +95,94 @@ void saveState(const char* f, const History& h, const Config& c) {
 	r->LinkEndChild(saveConfig(c));
 	d.SaveFile(f);
 }
+#else
+#define _DUMP(n, v) " " << (n) << "=\"" << (v) << "\""
+#define DUMPBOOL(n, v) _DUMP(n, (v) ? 1 : 0)
+#define DUMPUINT(n, v) _DUMP(n, (uint64_t)(v))
+#define DUMPINT(n, v) _DUMP(n, (int64_t)(v))
+
+void saveColour(std::ostream& o, struct Colour c) {
+	o << "<Colour"
+	  << DUMPUINT("R", c.r)
+	  << DUMPUINT("G", c.g)
+	  << DUMPUINT("B", c.b)
+	  << DUMPUINT("A", c.a)
+	  << " />" << std::endl;
+}
+
+void saveVertex(std::ostream& o, const Polygon& p, uint32_t vidx) {
+	o << "<Vertex"
+	  << DUMPUINT("Order", vidx)
+	  << DUMPINT("X", p.x()[vidx])
+	  << DUMPINT("Y", p.y()[vidx])
+	  << " />" << std::endl;
+}
+
+void savePolygon(std::ostream& o, const Polygon& p, uint32_t pidx) {
+	o << "<Polygon" 
+	  << DUMPUINT("Order", pidx)
+	  << DUMPUINT("NumVertices", p.num())
+	  << ">" << std::endl;
+	saveColour(o, p.colour());
+	for (uint32_t vidx = 0; vidx < p.num(); vidx++) {
+		saveVertex(o, p, vidx);
+	}
+	o << "</Polygon>" << std::endl;
+}
+
+void saveDNA(std::ostream& o, const DNA& d) {
+	o << "<DNA"
+	  << DUMPUINT("NumPolygons", d.num())
+	  << DUMPUINT("Score", d.score())
+	  << ">" << std::endl;
+	for (uint32_t pidx = 0; pidx < d.num(); pidx++) {
+		savePolygon(o, d[pidx], pidx);
+	}
+	o << "</DNA>" << std::endl;
+}
+
+void saveEntry(std::ostream& o, const History& h, uint32_t eidx) {
+	o << "<Entry"
+	  << DUMPUINT("Order", eidx)
+	  << DUMPUINT("Iteration", h.iter(eidx))
+	  << ">" << std::endl;
+	saveDNA(o, h.dna(eidx));
+	o << "</Entry>" << std::endl;
+}
+
+void saveHistory(std::ostream& o, const History& h) {
+	o << "<History"
+	  << DUMPUINT("NumEntries", h.num())
+	  << ">" << std::endl;
+	for (uint32_t eidx = 0; eidx < h.num(); eidx++) {
+		saveEntry(o, h, eidx);
+	}
+	o << "</History>" << std::endl;
+}
+
+void saveConfig(std::ostream& o, const Config& c) {
+	o << "<Config"
+	  << DUMPBOOL("WhiteBackground", c.whiteBG())
+	  << DUMPUINT("Width", c.width())
+	  << DUMPUINT("Height", c.height())
+	  << DUMPUINT("MaxPolygons", c.maxPolygons())
+	  << DUMPUINT("MaxPolySize", c.maxPolySize())
+	  << DUMPUINT("DeltaCoord", c.deltaCoord())
+	  << DUMPUINT("MaxDegree", c.maxDegree())
+	  << DUMPUINT("MaxAlpha", c.maxAlpha())
+	  << DUMPUINT("MinAlpha", c.minAlpha())
+	  << DUMPUINT("DeltaColour", c.deltaColour())
+	  << " />" << std::endl;
+}
+
+void saveState(const char* f, const History& h, const Config& c) {
+	std::ofstream o(f);
+	o << "<GeneticState>" << std::endl;
+	saveHistory(o, h);
+	saveConfig(o, c);
+	o << "</GeneticState>" << std::endl;
+}
+#endif
 
 void loadVertex(const TiXmlElement* e, int16_t* x, int16_t* y, int n) {
 	int o, tx, ty;
