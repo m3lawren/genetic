@@ -113,7 +113,7 @@ void parseOpts(int argc, char** argv, Config& c) {
 			}
 			case 'a':
 			{
-				uint8_t v = c.maxAlpha();
+				uint16_t v = c.maxAlpha();
 				s.str(optarg);
 				s >> v;
 				c.setMaxAlpha(v);
@@ -121,7 +121,7 @@ void parseOpts(int argc, char** argv, Config& c) {
 			}
 			case 0xff:
 			{
-				uint8_t v = c.minAlpha();
+				uint16_t v = c.minAlpha();
 				s.str(optarg);
 				s >> v;
 				c.setMinAlpha(v);
