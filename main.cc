@@ -57,7 +57,9 @@ void usage() {
 				 << "  --white-bg, -w              Use a white background." << std::endl
 				 << "  --max-polygons, -p <num>    Set the maximum number of polygons (default: " << c.maxPolygons() << ")" << std::endl
 				 << "  --max-poly-size, -s <num>   Set the maximum polygon size (default: " << c.maxPolySize() << ")" << std::endl
-				 << "  --max-degree, -d <num>      Set the maximum degree of a polygon (default: " << c.maxDegree() << ")" << std::endl;
+				 << "  --max-degree, -d <num>      Set the maximum degree of a polygon (default: " << c.maxDegree() << ")" << std::endl
+				 << "  --min-alpha                 Set the minimum alpha value for a polygon (default: " << (uint32_t)c.minAlpha() << ")" << std::endl
+				 << "  --max-alpha, -a <num>       Set the maximum alpha value for a polygon (default: " << (uint32_t)c.maxAlpha() << ")" << std::endl;
 }
 
 void parseOpts(int argc, char** argv, Config& c) {
@@ -67,11 +69,13 @@ void parseOpts(int argc, char** argv, Config& c) {
 		{"max-polygons", 1, 0, 'p'},
 		{"max-poly-size", 1, 0, 's'},
 		{"max-degree", 1, 0, 'd'},
+		{"min-alpha", 1, 0, 0xff},
+		{"max-alpha", 1, 0, 'a'},
 		{"help", 0, 0, 'h'},
 		{0, 0, 0, 0}
 	};
 	while (true) {
-		int j = getopt_long(argc, argv, "bwp:s:d:h", longopts, NULL);
+		int j = getopt_long(argc, argv, "bwp:s:d:a:h", longopts, NULL);
 		std::istringstream s;
 		if (j == -1) {
 			break;
@@ -105,6 +109,22 @@ void parseOpts(int argc, char** argv, Config& c) {
 				s.str(optarg);
 				s >> v;
 				c.setMaxDegree(v);
+				break;
+			}
+			case 'a':
+			{
+				uint8_t v = c.maxAlpha();
+				s.str(optarg);
+				s >> v;
+				c.setMaxAlpha(v);
+				break;
+			}
+			case 0xff:
+			{
+				uint8_t v = c.minAlpha();
+				s.str(optarg);
+				s >> v;
+				c.setMinAlpha(v);
 				break;
 			}
 			case 'h':

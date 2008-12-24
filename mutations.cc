@@ -56,7 +56,7 @@ DNA mutationAddPolygon(const DNA& d, const Config& c) {
 	col.r = randrange(0, 255);
 	col.g = randrange(0, 255);
 	col.b = randrange(0, 255);
-	col.a = randrange(15, 255);
+	col.a = randrange(c.minAlpha(), c.maxAlpha());
 
 	p.push_back(Polygon(3, x, y, col));
 

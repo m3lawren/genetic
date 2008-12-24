@@ -5,7 +5,7 @@
 Config::Config() 
 	: _whiteBG(false), _w(0), _h(0), 
 	  _mp(150), _mpsz(40), _dcr(5), _md(8),
-	  _mxa(255), _mna(15), _dcl(15) {
+	  _mxa(191), _mna(15), _dcl(15) {
 }
 
 Config::~Config() {
@@ -84,10 +84,12 @@ void Config::setMaxDegree(uint32_t v) {
 }
 
 void Config::setMaxAlpha(uint8_t v) {
+	if (v < minAlpha()) return;
 	_mxa = v;
 }
 
 void Config::setMinAlpha(uint8_t v) {
+	if (v > maxAlpha()) return;
 	_mna = v;
 }
 
