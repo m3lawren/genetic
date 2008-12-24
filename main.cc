@@ -127,10 +127,12 @@ int main(int argc, char** argv) {
 
 	::srand(::time(NULL));
 
+	std::cout << "Loading old state" << std::endl;
 	loadState("state.xml", h, c);
 
 	parseOpts(argc, argv, c);
 
+	std::cout << "Loading target image" << std::endl;
 	SDL_Surface* ts = loadRGBA("target.jpg");
 
 	c.setWidth(ts->w);
@@ -151,6 +153,7 @@ int main(int argc, char** argv) {
 	SDL_Surface* cs = createSurface(c.width(), c.height());
 	renderDNA(cs, d, c);
 	d.setScore(calcScore(cs, ts));
+	std::cout << "Starting main loop" << std::endl;
 	while (running) {
 		x++;
 		nc++;

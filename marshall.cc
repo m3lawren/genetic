@@ -280,6 +280,7 @@ int loadDNA(const TiXmlElement* e, DNA& d) {
 	}
 	d = DNA(polys);
 	d.setScore(sc);
+	std::cout << "." << std::flush;
 	return 0;
 }
 
@@ -386,4 +387,5 @@ void loadState(const char* f, History& h, Config& c) {
 			loadStateImpl(child, h, c);
 		}
 	}
+	std::cout << std::endl;
 }

@@ -29,6 +29,9 @@ Polygon::~Polygon() {
 }
 
 Polygon& Polygon::operator=(const Polygon& rhs) { 
+	if (&rhs == this) {
+		return *this;
+	}
 	if (_cap < rhs.num()) {
 		if (_cap) {
 			delete[] _x;

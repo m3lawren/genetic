@@ -67,6 +67,9 @@ DNA mutationSwap(const DNA& d, const Config&) {
 	std::vector<Polygon> p(d.polygons());
 	int src = randrange(0, p.size() - 1);
 	int dest = randrange(0, p.size() - 1);
+	if (p.size() <= 1) {
+		return d;
+	}
 	if (src == dest) {
 		dest = (src + 1) % p.size();
 	}
