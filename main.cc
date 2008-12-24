@@ -104,7 +104,7 @@ void parseOpts(int argc, char** argv, Config& c) {
 				int32_t v = c.maxDegree();
 				s.str(optarg);
 				s >> v;
-				c.setMaxPolySize(v);
+				c.setMaxDegree(v);
 				break;
 			}
 			case 'h':
