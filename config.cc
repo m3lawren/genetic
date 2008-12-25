@@ -2,13 +2,13 @@
 
 #include <cassert>
 
-#define FREQ_LOW 1000
-#define FREQ_MED 500
+#define FREQ_LOW 1500
+#define FREQ_MED 1000 
 
 Config::Config() 
 	: _whiteBG(false), _w(0), _h(0), 
-	  _mp(150), _mpsz(40), _md(8),
-	  _mxa(63), _mna(7), 
+	  _mp(150), _mpsz(40), _md(12),
+	  _mxa(63), _mna(31), 
 	  _mplaf(FREQ_MED), _mpldf(FREQ_LOW), _mplsf(FREQ_LOW),
 	  _mcf(FREQ_LOW),
 	  _mpthf(FREQ_LOW), _mptmf(FREQ_LOW),  _mptsf(FREQ_LOW), _mptaf(FREQ_LOW), _mptdf(FREQ_LOW), _mptwf(FREQ_LOW) {

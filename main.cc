@@ -186,7 +186,7 @@ int main(int argc, char** argv) {
 		renderDNA(cs, cand, c);
 		cand.setScore(calcScore(cs, ts));
 
-		if (cand.score() < d.score()) {
+		if (cand.score() <= d.score()) {
 			d = cand;
 			h.update(d, x);
 			if (::time(NULL) - lastwrite > 5) {
