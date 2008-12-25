@@ -24,9 +24,9 @@ void Colour::mutate() {
 Polygon::Polygon() : _num(0), _x(NULL), _y(NULL) {
 	Config& c = Config::instance();
 
-	_num = 3;
-	_x = new int16_t[_num];
-	_y = new int16_t[_num];
+	_num = _cap = 3;
+	_x = new int16_t[_cap];
+	_y = new int16_t[_cap];
 
 	_x[0] = Utils::randRange(0, c.width() - 1);
 	_y[0] = Utils::randRange(0, c.height() - 1);
