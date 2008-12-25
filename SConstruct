@@ -3,7 +3,19 @@ extrasIMG = Dir('extras/IMG')
 extrasTinyxml = Dir('extras/tinyxml')
 pwd = Dir('.')
 
-env = Environment(CXXFLAGS='-g -Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', CFLAGS='-O2', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
+debug = ARGUMENTS.get('debug', 0)
+ctags = ARGUMENTS.get('ctags', 0)
+
+env = Environment(CXXFLAGS='-Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', CFLAGS='-O2', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
+
+if int(debug):
+	env.Append(CCFLAGS=' -g')
+else:
+	env.Append(CCFLAGS=' -O2')
+
+if int(ctags):
+	import os
+	os.system('ctags -R *')
 
 SConscript('extras/SConscript')
 
