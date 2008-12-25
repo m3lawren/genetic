@@ -11,6 +11,7 @@
 #include <graphics.h>
 #include <history.h>
 #include <marshall.h>
+#include <mtwist.h>
 
 #include <SDL.h>
 #include <IMG_savepng.h>
@@ -143,7 +144,7 @@ int main(int argc, char** argv) {
 
 	init_locale();
 
-	::srand(::time(NULL));
+	mt_seed();
 
 	std::cout << "Loading old state" << std::endl;
 	/*loadState("state.xml", h, c);*/
