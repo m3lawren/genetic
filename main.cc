@@ -177,7 +177,9 @@ int main(int argc, char** argv) {
 		nc++;
 
 		cand = d;
-		cand.mutate();
+		while (cand == d) {
+			cand.mutate();
+		}
 	
 		renderDNA(cs, cand, c);
 		cand.setScore(calcScore(cs, ts));

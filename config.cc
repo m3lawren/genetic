@@ -6,7 +6,7 @@ Config::Config()
 	: _whiteBG(false), _w(0), _h(0), 
 	  _mp(150), _mpsz(40), _dcr(5), _md(8),
 	  _mxa(63), _mna(7), _dcl(15),
-	  _mplaf(1500), _mpldf(1500),
+	  _mplaf(700), _mpldf(1500),
 	  _mcf(1500),
 	  _mpthf(1500), _mptmf(1500),  _mptsf(1500), _mptaf(1500), _mptdf(1500) {
 }

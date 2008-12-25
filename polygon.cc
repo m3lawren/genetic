@@ -123,8 +123,8 @@ void Polygon::_mutatePoint(size_t idx) {
 		_y[idx] = Utils::randRange(0, c.height() - 1);
 	}
 	if (Utils::doMutate(c.mutPointMedFreq())) {
-		_x[idx] = Utils::min(Utils::max(_x[idx] + Utils::randRange(-c.width() / 4, c.width() / 4), 0), c.width() - 1);
-		_y[idx] = Utils::min(Utils::max(_y[idx] + Utils::randRange(-c.height() / 4, c.height() / 4), 0), c.height() - 1);
+		_x[idx] = Utils::min(Utils::max(_x[idx] + Utils::randRange(-(int64_t)c.width() / 4, c.width() / 4), 0), c.width() - 1);
+		_y[idx] = Utils::min(Utils::max(_y[idx] + Utils::randRange(-(int64_t)c.height() / 4, c.height() / 4), 0), c.height() - 1);
 	}
 	if (Utils::doMutate(c.mutPointSmallFreq())) {
 		_x[idx] = Utils::min(Utils::max(_x[idx] + Utils::randRange(-3, 3), 0), c.width() - 1);
