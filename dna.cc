@@ -1,10 +1,10 @@
 #include <dna.h>
 
-DNA::DNA() : _score((uint64_t)-1), _m("") {
+DNA::DNA() : _score((uint64_t)-1) {
 }
 
 DNA::DNA(const std::vector<Polygon>& p) 
-	: _polys(p), _score((uint64_t)-1), _m("") {
+	: _polys(p), _score((uint64_t)-1) {
 }
 		
 DNA::~DNA() {
@@ -26,24 +26,12 @@ uint64_t DNA::score() const {
 	return _score;
 }
 
-std::string DNA::lastMutation() const {
-	return _m;
-}
-
 void DNA::setScore(uint64_t v) {
 	_score = v;
 }
 
-void DNA::setLastMutation(std::string m) {
-	_m = m;
-}
+void DNA::mutate() {
 
-bool operator<(const DNA& a, const DNA& b) {
-	if (a.lastMutation() == "mutationVertexDelete" || 
-		 a.lastMutation() == "mutationDelete") {
-		return a.score() <= b.score();
-	}
-	return a.score() < b.score();
 }
 
 bool operator==(const DNA& a, const DNA& b) {

@@ -17,18 +17,16 @@ class DNA {
 		const Polygon& operator[](size_t) const;
 		const std::vector<Polygon>& polygons() const;
 		uint64_t score() const;
-		std::string lastMutation() const;
 
 		void setScore(uint64_t);
-		void setLastMutation(std::string);
+
+		void mutate();
 
 	private:
 		std::vector<Polygon> _polys;
-		uint64_t _score;
-		std::string _m;
+		uint64_t             _score;
 };
 
-bool operator<(const DNA&, const DNA&);
 bool operator==(const DNA&, const DNA&);
 bool operator!=(const DNA&, const DNA&);
 

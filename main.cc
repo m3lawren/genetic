@@ -11,7 +11,6 @@
 #include <graphics.h>
 #include <history.h>
 #include <marshall.h>
-#include <mutations.h>
 
 #include <SDL.h>
 #include <IMG_savepng.h>
@@ -148,7 +147,7 @@ int main(int argc, char** argv) {
 	::srand(::time(NULL));
 
 	std::cout << "Loading old state" << std::endl;
-	loadState("state.xml", h, c);
+	/*loadState("state.xml", h, c);*/
 
 	parseOpts(argc, argv, c);
 
@@ -159,7 +158,6 @@ int main(int argc, char** argv) {
 	c.setHeight(ts->h);
 
 	if (h.num() == 0) {
-		d = mutationAddPolygon(d, c);
 		x = 0;
 		h.update(d, 1);
 	} else {
@@ -178,36 +176,30 @@ int main(int argc, char** argv) {
 		x++;
 		nc++;
 
-		if (nc > 100 + d.num() && nc % 2 == 0 && d.num() < c.maxPolygons()) {
-			cand = mutationAddPolygon(d, c);
-		} else {
-			do { 
-				cand = mutate(d, c);
-			} while (cand == d);
-		}
+		cand = d;
+		cand.mutate();
 	
 		renderDNA(cs, cand, c);
 		cand.setScore(calcScore(cs, ts));
 
-		if (cand < d) {
+		if (cand.score() < d.score()) {
 			d = cand;
 			h.update(d, x);
 			if (::time(NULL) - lastwrite > 5) {
 				IMG_SavePNG("best.png", cs, 9);
-				saveState("state.xml", h, c);
+				/*saveState("state.xml", h, c);*/
 				lastwrite = ::time(NULL);
 			}
 			std::cout << "Replaced current with candidate. (NC: " << std::setw(4) << nc 
 			          << ", Score: " << std::setw(13) << d.score() 
 						 << ", Iter: " << std::setw(7) << x 
-						 << ", Poly: " << d.num() 
-						 << ", Mut: " << d.lastMutation() << ")" << std::endl;
+						 << ", Poly: " << d.num() << ")" << std::endl;
 			nc = 0;
 		}
 	}
 
 	IMG_SavePNG("best.png", cs, 9);
-	saveState("state.xml", h, c);
+	/*saveState("state.xml", h, c);*/
 
 	SDL_FreeSurface(cs);
 	SDL_FreeSurface(ts);

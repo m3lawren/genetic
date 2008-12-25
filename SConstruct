@@ -13,8 +13,7 @@ sources = [
 	'graphics.cc',
 	'history.cc',
 	'main.cc',
-	'marshall.cc',
-	'mutations.cc',
+	#'marshall.cc',
 	'polygon.cc',
 ]
 
