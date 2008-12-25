@@ -90,8 +90,13 @@ bool DNA::_mutatePolySwap() {
 	}
 
 	Polygon t = _polys[src];
-	_polys[src] = _polys[dest];
-	_polys[dest] = t;
+	if (src < dest) {
+		_polys.insert(_polys.begin() + dest, t);
+		_polys.erase(_polys.begin() + src);
+	} else {
+		_polys.erase(_polys.begin() + src);
+		_polys.insert(_polys.begin() + dest, t);
+	}
 	return true;
 }
 

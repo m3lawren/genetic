@@ -205,13 +205,28 @@ bool Polygon::_mutateSwapPoint() {
 		dest = (dest + 1) % _num;
 	}
 
-	int16_t t = _x[src];
-	_x[src] = _x[dest];
-	_x[dest] = t;
-
-	t = _y[src];
-	_y[src] = _y[dest];
-	_y[dest] = t;
+	int16_t t;
+	if (src < dest) {
+		/* [0, 1, 2, 3, 4] */
+		/* [0, 2, 3, 1, 4] */
+		t = _x[src];
+		::memmove(_x + src, _x + src + 1, (dest - src) * sizeof(int16_t));
+		_x[dest] = t;
+		
+		t = _y[src];
+		::memmove(_y + src, _y + src + 1, (dest - src) * sizeof(int16_t));
+		_y[dest] = t;
+	} else {
+		/* [0, 1, 2, 3, 4] */
+		/* [0, 3, 1, 2, 4] */
+		t = _x[src];
+		::memmove(_x + dest + 1, _x + dest, (src - dest) * sizeof(int16_t));
+		_x[dest] = t;
+		
+		t = _y[src];
+		::memmove(_y + dest + 1, _y + dest, (src - dest) * sizeof(int16_t));
+		_y[dest] = t;
+	}
 	return true;
 }
 
