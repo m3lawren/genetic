@@ -40,6 +40,11 @@ Polygon::Polygon() : _num(0), _x(NULL), _y(NULL) {
 	_y[1] = Utils::min(Utils::max(0, _y[0] + Utils::randRange(-3, 3)), c.height() - 1);
 	_x[2] = Utils::min(Utils::max(0, _x[0] + Utils::randRange(-3, 3)), c.width() - 1);
 	_y[2] = Utils::min(Utils::max(0, _y[0] + Utils::randRange(-3, 3)), c.height() - 1);
+
+	_colour.r = Utils::randRange(0, 255);
+	_colour.g = Utils::randRange(0, 255);
+	_colour.b = Utils::randRange(0, 255);
+	_colour.a = Utils::randRange(c.minAlpha(), c.maxAlpha());
 }
 
 Polygon::Polygon(size_t num, const int16_t* x, const int16_t* y, struct Colour colour) 

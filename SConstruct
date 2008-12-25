@@ -6,12 +6,10 @@ pwd = Dir('.')
 debug = ARGUMENTS.get('debug', 0)
 ctags = ARGUMENTS.get('ctags', 0)
 
-env = Environment(CXXFLAGS='-Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', CFLAGS='-O2', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
+env = Environment(CXXFLAGS='-O2 -Wextra -Wall -Werror `sdl-config --cflags` -std=c++98 -pedantic', CFLAGS='-O2', LIBPATH=[extras], CPPPATH=[extrasIMG, extrasTinyxml, pwd])
 
 if int(debug):
 	env.Append(CXXFLAGS=' -g')
-else:
-	env.Append(CXXFLAGS=' -O2')
 
 if int(ctags):
 	import os
