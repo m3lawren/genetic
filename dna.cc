@@ -1,7 +1,10 @@
 #include <dna.h>
 
-DNA::DNA(const Config& c) : _score((uint64_t)-1) {
-	_polys.push_back(Polygon(c));
+#include <config.h>
+#include <utils.h>
+
+DNA::DNA() : _score((uint64_t)-1) {
+	_polys.push_back(Polygon());
 }
 
 DNA::DNA(const std::vector<Polygon>& p) 
@@ -31,8 +34,36 @@ void DNA::setScore(uint64_t v) {
 	_score = v;
 }
 
-void DNA::mutate(const Config& c) {
-	(void)c;	
+void DNA::mutate() {
+	Config& c = Config::instance();
+
+	if (Utils::doMutate(c.mutPolyDelFreq())) {
+		_mutatePolyDel();
+	}
+
+	if (Utils::doMutate(c.mutPolyAddFreq())) {
+		_mutatePolyAdd();
+	}
+	
+	for (size_t idx = 0; idx < _polys.size(); idx++) {
+		_polys[idx].mutate();
+	}
+}
+
+void DNA::_mutatePolyDel() {
+	if (_polys.size() == 0) {
+		return;
+	}
+	size_t loc = Utils::randRange(0, _polys.size() - 1);
+	_polys.erase(_polys.begin() + loc);
+}
+
+void DNA::_mutatePolyAdd() {
+	if (_polys.size() >= Config::instance().maxPolygons()) {
+		return;
+	}
+	size_t loc = Utils::randRange(0, _polys.size());
+	_polys.insert(_polys.begin() + loc, Polygon());
 }
 
 bool operator==(const DNA& a, const DNA& b) {

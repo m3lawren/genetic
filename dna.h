@@ -10,7 +10,7 @@ class Config;
 
 class DNA {
 	public:
-		DNA(const Config&);
+		DNA();
 		DNA(const std::vector<Polygon>&);
 		~DNA();
 
@@ -21,11 +21,14 @@ class DNA {
 
 		void setScore(uint64_t);
 
-		void mutate(const Config&);
+		void mutate();
 
 	private:
 		std::vector<Polygon> _polys;
 		uint64_t             _score;
+
+		void _mutatePolyDel();
+		void _mutatePolyAdd();
 };
 
 bool operator==(const DNA&, const DNA&);

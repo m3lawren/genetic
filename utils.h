@@ -7,6 +7,10 @@ namespace Utils {
 
 	int64_t randRange(int64_t, int64_t);
 
+	inline bool doMutate(int64_t freq) {
+		return randRange(1, freq) == 1;
+	}
+
 	inline int64_t max(int64_t a, int64_t b) {
 		if (a > b) return a;
 		return b;

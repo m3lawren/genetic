@@ -9,13 +9,15 @@ struct Colour {
 	uint8_t g;
 	uint8_t b;
 	uint8_t a;
+
+	void mutate();
 };
 
 class Config;
 
 class Polygon {
 	public:
-		Polygon(const Config&);
+		Polygon();
 		Polygon(size_t num, const int16_t* x, const int16_t* y, struct Colour colour);
 		Polygon(const Polygon&);
 
@@ -28,12 +30,18 @@ class Polygon {
 		const int16_t* y() const;
 		const struct Colour& colour() const;
 
+		void mutate();
+
 	private:
 		size_t _cap;
 		size_t _num;
 		int16_t* _x;
 		int16_t* _y;
 		struct Colour _colour;
+
+		void _mutatePoint(size_t);
+		void _mutateAddPoint();
+		void _mutateDelPoint();
 };
 
 bool operator==(const Polygon&, const Polygon&);

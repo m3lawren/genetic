@@ -50,7 +50,7 @@ void dump(const DNA& d) {
 }
 
 void usage() {
-	Config c;
+	Config& c = Config::instance();
 	std::cerr << "genetic [options]" << std::endl
 	          << "  --black-bg, -b              Use a black background (default)." << std::endl
 				 << "  --white-bg, -w              Use a white background." << std::endl
@@ -135,7 +135,7 @@ void parseOpts(int argc, char** argv, Config& c) {
 }
 
 int main(int argc, char** argv) { 
-	Config c; 
+	Config& c = Config::instance(); 
 	History h;
 	uint64_t x;
 
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
 	c.setWidth(ts->w);
 	c.setHeight(ts->h);
 
-	DNA d(c);
+	DNA d;
 	if (h.num() == 0) {
 		x = 0;
 		h.update(d, 1);
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
 
 	uint64_t nc = 0;
 	time_t lastwrite = 0;
-	DNA cand(c);
+	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
 	renderDNA(cs, d, c);
 	d.setScore(calcScore(cs, ts));
@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
 		nc++;
 
 		cand = d;
-		cand.mutate(c);
+		cand.mutate();
 	
 		renderDNA(cs, cand, c);
 		cand.setScore(calcScore(cs, ts));
