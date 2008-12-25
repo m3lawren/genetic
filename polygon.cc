@@ -1,8 +1,20 @@
 #include <polygon.h>
 
+#include <config.h>
 #include <cstring>
+#include <utils.h>
 
-Polygon::Polygon() : _num(0), _x(NULL), _y(NULL) {
+Polygon::Polygon(const Config& c) : _num(0), _x(NULL), _y(NULL) {
+	_num = 3;
+	_x = new int16_t[_num];
+	_y = new int16_t[_num];
+
+	_x[0] = Utils::randRange(0, c.width() - 1);
+	_y[0] = Utils::randRange(0, c.height() - 1);
+	_x[1] = Utils::min(Utils::max(0, _x[0] + Utils::randRange(-3, 3)), c.width() - 1);
+	_y[1] = Utils::min(Utils::max(0, _y[0] + Utils::randRange(-3, 3)), c.height() - 1);
+	_x[2] = Utils::min(Utils::max(0, _x[0] + Utils::randRange(-3, 3)), c.width() - 1);
+	_y[2] = Utils::min(Utils::max(0, _y[0] + Utils::randRange(-3, 3)), c.height() - 1);
 }
 
 Polygon::Polygon(size_t num, const int16_t* x, const int16_t* y, struct Colour colour) 

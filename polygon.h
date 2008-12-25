@@ -11,9 +11,11 @@ struct Colour {
 	uint8_t a;
 };
 
+class Config;
+
 class Polygon {
 	public:
-		Polygon();
+		Polygon(const Config&);
 		Polygon(size_t num, const int16_t* x, const int16_t* y, struct Colour colour);
 		Polygon(const Polygon&);
 

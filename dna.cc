@@ -1,6 +1,7 @@
 #include <dna.h>
 
-DNA::DNA() : _score((uint64_t)-1) {
+DNA::DNA(const Config& c) : _score((uint64_t)-1) {
+	_polys.push_back(Polygon(c));
 }
 
 DNA::DNA(const std::vector<Polygon>& p) 
@@ -30,8 +31,8 @@ void DNA::setScore(uint64_t v) {
 	_score = v;
 }
 
-void DNA::mutate() {
-
+void DNA::mutate(const Config& c) {
+	(void)c;	
 }
 
 bool operator==(const DNA& a, const DNA& b) {

@@ -2,14 +2,15 @@
 #define _DNA_H_
 
 #include <cstdlib>
+#include <polygon.h>
 #include <string>
 #include <vector>
 
-#include <polygon.h>
+class Config;
 
 class DNA {
 	public:
-		DNA();
+		DNA(const Config&);
 		DNA(const std::vector<Polygon>&);
 		~DNA();
 
@@ -20,7 +21,7 @@ class DNA {
 
 		void setScore(uint64_t);
 
-		void mutate();
+		void mutate(const Config&);
 
 	private:
 		std::vector<Polygon> _polys;
