@@ -6,9 +6,9 @@ Config::Config()
 	: _whiteBG(false), _w(0), _h(0), 
 	  _mp(150), _mpsz(40), _dcr(5), _md(8),
 	  _mxa(63), _mna(7), _dcl(15),
-	  _mplaf(700), _mpldf(1500),
+	  _mplaf(700), _mpldf(1500), _mplsf(1500),
 	  _mcf(1500),
-	  _mpthf(1500), _mptmf(1500),  _mptsf(1500), _mptaf(1500), _mptdf(1500) {
+	  _mpthf(1500), _mptmf(1500),  _mptsf(1500), _mptaf(1500), _mptdf(1500), _mptwf(1500) {
 }
 
 Config& Config::instance() {
@@ -67,6 +67,10 @@ uint32_t Config::mutPolyDelFreq() const {
 	return _mpldf;
 }
 
+uint32_t Config::mutPolySwapFreq() const {
+	return _mplsf;
+}
+
 uint32_t Config::mutColourFreq() const {
 	return _mcf;
 }
@@ -89,6 +93,10 @@ uint32_t Config::mutPointAddFreq() const {
 
 uint32_t Config::mutPointDelFreq() const {
 	return _mptdf;
+}
+
+uint32_t Config::mutPointSwapFreq() const {
+	return _mptwf;
 }
 
 void Config::setWhiteBG(bool v) {
@@ -145,6 +153,10 @@ void Config::setMutPolyDelFreq(uint32_t v) {
 	_mpldf = v;
 }
 
+void Config::setMutPolySwapFreq(uint32_t v) {
+	_mplsf = v;
+}
+
 void Config::setMutColourFreq(uint32_t v) {
 	_mcf = v;
 }
@@ -167,4 +179,8 @@ void Config::setMutPointAddFreq(uint32_t v) {
 
 void Config::setMutPointDelFreq(uint32_t v) {
 	_mptdf = v;
+}
+
+void Config::setMutPointSwapFreq(uint32_t v) {
+	_mptwf = v;
 }

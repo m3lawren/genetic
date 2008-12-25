@@ -42,6 +42,7 @@ class Polygon {
 		void _mutatePoint(size_t);
 		void _mutateAddPoint();
 		void _mutateDelPoint();
+		void _mutateSwapPoint();
 };
 
 bool operator==(const Polygon&, const Polygon&);

@@ -44,6 +44,10 @@ void DNA::mutate() {
 	if (Utils::doMutate(c.mutPolyAddFreq())) {
 		_mutatePolyAdd();
 	}
+
+	if (Utils::doMutate(c.mutPolySwapFreq())) {
+		_mutatePolySwap();
+	}
 	
 	for (size_t idx = 0; idx < _polys.size(); idx++) {
 		_polys[idx].mutate();
@@ -64,6 +68,23 @@ void DNA::_mutatePolyAdd() {
 	}
 	size_t loc = Utils::randRange(0, _polys.size());
 	_polys.insert(_polys.begin() + loc, Polygon());
+}
+
+void DNA::_mutatePolySwap() {
+	if (_polys.size() <= 1) {
+		return;
+	}
+
+	size_t src = Utils::randRange(0, _polys.size() - 1);
+	size_t dest = Utils::randRange(0, _polys.size() - 1);
+
+	if (src == dest) {
+		dest = (src + 1) % _polys.size();
+	}
+
+	Polygon t = _polys[src];
+	_polys[src] = _polys[dest];
+	_polys[dest] = t;
 }
 
 bool operator==(const DNA& a, const DNA& b) {

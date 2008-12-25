@@ -111,6 +111,10 @@ void Polygon::mutate() {
 		_mutateAddPoint();
 	}
 
+	if (Utils::doMutate(c.mutPointSwapFreq())) {
+		_mutateSwapPoint();
+	}
+
 	for (size_t idx = 0; idx < _num; idx++) {
 		_mutatePoint(idx);
 	}
@@ -167,6 +171,26 @@ void Polygon::_mutateDelPoint() {
 	_num--;
 	size_t idx = Utils::randRange(0, _num);
 	::memmove(_x + idx, _x + idx + 1, (_num - idx) * sizeof(int16_t));
+}
+
+void Polygon::_mutateSwapPoint() {
+	if (_num <= 1) {
+		return;
+	}
+
+	size_t src = Utils::randRange(0, _num - 1);
+	size_t dest = Utils::randRange(0, _num - 1);
+	if (dest == src) {
+		dest = (dest + 1) % _num;
+	}
+
+	int16_t t = _x[src];
+	_x[src] = _x[dest];
+	_x[dest] = t;
+
+	t = _y[src];
+	_y[src] = _y[dest];
+	_y[dest] = t;
 }
 
 bool operator==(const Polygon& a, const Polygon& b) {

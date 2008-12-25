@@ -29,6 +29,7 @@ class DNA {
 
 		void _mutatePolyDel();
 		void _mutatePolyAdd();
+		void _mutatePolySwap();
 };
 
 bool operator==(const DNA&, const DNA&);

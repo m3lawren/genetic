@@ -24,12 +24,14 @@ class Config {
 
 		uint32_t mutPolyAddFreq() const;
 		uint32_t mutPolyDelFreq() const;
+		uint32_t mutPolySwapFreq() const;
 		uint32_t mutColourFreq() const;
 		uint32_t mutPointHugeFreq() const;
 		uint32_t mutPointMedFreq() const;
 		uint32_t mutPointSmallFreq() const;
 		uint32_t mutPointAddFreq() const;
 		uint32_t mutPointDelFreq() const;
+		uint32_t mutPointSwapFreq() const;
 
 		void setWhiteBG(bool);
 		void setWidth(uint32_t);
@@ -46,12 +48,14 @@ class Config {
 
 		void setMutPolyAddFreq(uint32_t);
 		void setMutPolyDelFreq(uint32_t);
+		void setMutPolySwapFreq(uint32_t);
 		void setMutColourFreq(uint32_t);
 		void setMutPointHugeFreq(uint32_t);
 		void setMutPointMedFreq(uint32_t);
 		void setMutPointSmallFreq(uint32_t);
 		void setMutPointAddFreq(uint32_t);
 		void setMutPointDelFreq(uint32_t);
+		void setMutPointSwapFreq(uint32_t);
 
 	private:
 		Config();
@@ -73,12 +77,14 @@ class Config {
 
 		uint32_t _mplaf;
 		uint32_t _mpldf;
+		uint32_t _mplsf;
 		uint32_t _mcf;
 		uint32_t _mpthf;
 		uint32_t _mptmf;
 		uint32_t _mptsf;
 		uint32_t _mptaf;
 		uint32_t _mptdf;
+		uint32_t _mptwf;
 };
 
 #endif
