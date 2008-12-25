@@ -7,95 +7,6 @@
 #define TIXML_USE_STL
 #include <tinyxml.h>
 
-//#define USE_TIXML_BUILTIN
-#ifdef USE_TIXML_BUILTIN
-TiXmlElement* saveColour(struct Colour c) {
-	TiXmlElement* e = new TiXmlElement("Colour");
-	e->SetAttribute("R", c.r);
-	e->SetAttribute("G", c.g);
-	e->SetAttribute("B", c.b);
-	e->SetAttribute("A", c.a);
-	return e;
-}
-
-TiXmlElement* saveVertex(const Polygon& p, uint32_t vidx) {
-	TiXmlElement* e = new TiXmlElement("Vertex");
-	e->SetAttribute("Order", vidx);
-	e->SetAttribute("X", p.x()[vidx]);
-	e->SetAttribute("Y", p.y()[vidx]);
-	return e;
-}
-
-TiXmlElement* savePolygon(const Polygon& p, uint32_t pidx) {
-	TiXmlElement* e = new TiXmlElement("Polygon");
-	e->SetAttribute("Order", pidx);
-	e->SetAttribute("NumVertices", p.num());
-	e->LinkEndChild(saveColour(p.colour()));
-	for (uint32_t idx = 0; idx < p.num(); idx++) {
-		e->LinkEndChild(saveVertex(p, idx));
-	}
-	return e;
-}
-
-TiXmlElement* saveDNA(const DNA& d) {
-	TiXmlElement* e = new TiXmlElement("DNA");
-	e->SetAttribute("NumPolygons", d.num());
-	{
-		std::ostringstream s;
-		s << d.score();
-		e->SetAttribute("Score", s.str());
-	}
-	for (uint32_t idx = 0; idx < d.num(); idx++) {
-		e->LinkEndChild(savePolygon(d[idx], idx));
-	}
-	return e;
-}
-
-TiXmlElement* saveEntry(const History& h, uint32_t eidx) {
-	TiXmlElement* e = new TiXmlElement("Entry");
-	e->SetAttribute("Order", eidx);
-	{
-		std::ostringstream s;
-		s << h.iter(eidx);
-		e->SetAttribute("Iteration", s.str());
-	}
-	e->LinkEndChild(saveDNA(h.dna(eidx)));
-	return e;
-}
-
-TiXmlElement* saveHistory(const History& h) {
-	TiXmlElement* e = new TiXmlElement("History");
-	e->SetAttribute("NumEntries", h.num());
-	for (uint32_t idx = 0; idx < h.num(); idx++) {
-		e->LinkEndChild(saveEntry(h, idx));
-	}
-	return e;
-}
-
-TiXmlElement* saveConfig(const Config& c) {
-	TiXmlElement* e = new TiXmlElement("Config");
-	e->SetAttribute("WhiteBackground", c.whiteBG() ? 1 : 0);
-	e->SetAttribute("Width", c.width());
-	e->SetAttribute("Height", c.height());
-	e->SetAttribute("MaxPolygons", c.maxPolygons());
-	e->SetAttribute("MaxPolySize", c.maxPolySize());
-	e->SetAttribute("DeltaCoord", c.deltaCoord());
-	e->SetAttribute("MaxDegree", c.maxDegree());
-	e->SetAttribute("MaxAlpha", c.maxAlpha());
-	e->SetAttribute("MinAlpha", c.minAlpha());
-	e->SetAttribute("DeltaColour", c.deltaColour());
-	return e;
-}
-
-void saveState(const char* f, const History& h, const Config& c) {
-	TiXmlDocument d;
-	TiXmlElement* r = new TiXmlElement("GeneticState");
-	d.LinkEndChild(r);
-	r->LinkEndChild(saveHistory(h));
-	r->LinkEndChild(saveConfig(c));
-	d.SaveFile(f);
-}
-#else
 #define _DUMP(n, v) " " << (n) << "=\"" << (v) << "\""
 #define DUMPBOOL(n, v) _DUMP(n, (v) ? 1 : 0)
 #define DUMPUINT(n, v) _DUMP(n, (uint64_t)(v))
@@ -167,11 +78,19 @@ void saveConfig(std::ostream& o, const Config& c) {
 	  << DUMPUINT("Height", c.height())
 	  << DUMPUINT("MaxPolygons", c.maxPolygons())
 	  << DUMPUINT("MaxPolySize", c.maxPolySize())
-	  << DUMPUINT("DeltaCoord", c.deltaCoord())
 	  << DUMPUINT("MaxDegree", c.maxDegree())
 	  << DUMPUINT("MaxAlpha", c.maxAlpha())
 	  << DUMPUINT("MinAlpha", c.minAlpha())
-	  << DUMPUINT("DeltaColour", c.deltaColour())
+	  << DUMPUINT("MutPolyAddFreq", c.mutPolyAddFreq())
+	  << DUMPUINT("MutPolyDelFreq", c.mutPolyDelFreq())
+	  << DUMPUINT("MutPolySwapFreq", c.mutPolySwapFreq())
+	  << DUMPUINT("MutColourFreq", c.mutColourFreq())
+	  << DUMPUINT("MutPointHugeFreq", c.mutPointHugeFreq())
+	  << DUMPUINT("MutPointMedFreq", c.mutPointMedFreq())
+	  << DUMPUINT("MutPointSmallFreq", c.mutPointSmallFreq())
+	  << DUMPUINT("MutPointAddFreq", c.mutPointAddFreq())
+	  << DUMPUINT("MutPointDelFreq", c.mutPointDelFreq())
+	  << DUMPUINT("MutPointSwapFreq", c.mutPointSwapFreq())
 	  << " />" << std::endl;
 }
 
@@ -182,7 +101,6 @@ void saveState(const char* f, const History& h, const Config& c) {
 	saveConfig(o, c);
 	o << "</GeneticState>" << std::endl;
 }
-#endif
 
 void loadVertex(const TiXmlElement* e, int16_t* x, int16_t* y, int n) {
 	int o, tx, ty;
@@ -330,38 +248,35 @@ void loadHistory(const TiXmlElement* e, History& h) {
 	}
 }
 
+#define _LOAD_INT(n, type, cond) { if (TIXML_SUCCESS == e->QueryIntAttribute(#n, &t)) { type _t = t; if (cond) { c.set##n(_t); }}}
+#define LOAD_UINT32(n) _LOAD_INT(n, uint32_t, true)
+#define LOAD_UINT8(n) _LOAD_INT(n, uint8_t, (int32_t)_t == t);
+
 void loadConfig(const TiXmlElement* e, Config& c) {
-	int t;
+	int32_t t;
 	if (TIXML_SUCCESS == e->QueryIntAttribute("WhiteBackground", &t)) {
 		c.setWhiteBG(t != 0);
 	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("Width", &t) && t > 0) {
-		c.setWidth(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("Height", &t) && t > 0) {
-		c.setHeight(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolygons", &t) && t > 0) {
-		c.setMaxPolygons(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxPolySize", &t) && t > 0) {
-		c.setMaxPolySize(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("DeltaCoord", &t) && t > 0) {
-		c.setDeltaCoord(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxDegree", &t) && t > 0) {
-		c.setMaxDegree(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("MaxAlpha", &t) && t >= 0 && t <= 255) {
-		c.setMaxAlpha(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("MinAlpha", &t) && t >= 0 && t <= 255) {
-		c.setMinAlpha(t);
-	}
-	if (TIXML_SUCCESS == e->QueryIntAttribute("DeltaColour", &t) && t >= 0 && t <= 255) {
-		c.setDeltaColour(t);
-	}
+	LOAD_UINT32(Width);
+	LOAD_UINT32(Height);
+
+	LOAD_UINT32(MaxPolygons);
+	LOAD_UINT32(MaxPolySize);
+	LOAD_UINT32(MaxDegree);
+
+	LOAD_UINT8(MaxAlpha);
+	LOAD_UINT8(MinAlpha);
+
+	LOAD_UINT32(MutPolyAddFreq);
+	LOAD_UINT32(MutPolyDelFreq);
+	LOAD_UINT32(MutPolySwapFreq);
+	LOAD_UINT32(MutColourFreq);
+	LOAD_UINT32(MutPointHugeFreq);
+	LOAD_UINT32(MutPointMedFreq);
+	LOAD_UINT32(MutPointSmallFreq);
+	LOAD_UINT32(MutPointAddFreq);
+	LOAD_UINT32(MutPointDelFreq);
+	LOAD_UINT32(MutPointSwapFreq);
 }
 	
 void loadStateImpl(const TiXmlElement* e, History& h, Config& c) {

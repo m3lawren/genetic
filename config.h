@@ -15,12 +15,10 @@ class Config {
 
 		uint32_t maxPolygons() const;
 		uint32_t maxPolySize() const;
-		uint32_t deltaCoord() const;
 		uint32_t maxDegree() const;
 
 		uint8_t  maxAlpha() const;
 		uint8_t  minAlpha() const;
-		uint8_t  deltaColour() const;
 
 		uint32_t mutPolyAddFreq() const;
 		uint32_t mutPolyDelFreq() const;

@@ -62,7 +62,8 @@ void usage() {
 				 << "  --max-alpha, -a <num>       Set the maximum alpha value for a polygon (default: " << (uint32_t)c.maxAlpha() << ")" << std::endl;
 }
 
-void parseOpts(int argc, char** argv, Config& c) {
+void parseOpts(int argc, char** argv) {
+	Config& c = Config::instance();
 	struct option longopts[] = {
 		{"black-bg", 0, 0, 'b'},
 		{"white-bg", 0, 0, 'w'},
@@ -147,9 +148,9 @@ int main(int argc, char** argv) {
 	mt_seed();
 
 	std::cout << "Loading old state" << std::endl;
-	/*loadState("state.xml", h, c);*/
+	loadState("state.xml", h, c);
 
-	parseOpts(argc, argv, c);
+	parseOpts(argc, argv);
 
 	std::cout << "Loading target image" << std::endl;
 	SDL_Surface* ts = loadRGBA("target.jpg");
@@ -190,7 +191,7 @@ int main(int argc, char** argv) {
 			h.update(d, x);
 			if (::time(NULL) - lastwrite > 5) {
 				IMG_SavePNG("best.png", cs, 9);
-				/*saveState("state.xml", h, c);*/
+				saveState("state.xml", h, c);
 				lastwrite = ::time(NULL);
 			}
 			std::cout << "Replaced current with candidate. (NC: " << std::setw(4) << nc 
@@ -202,7 +203,7 @@ int main(int argc, char** argv) {
 	}
 
 	IMG_SavePNG("best.png", cs, 9);
-	/*saveState("state.xml", h, c);*/
+	saveState("state.xml", h, c);
 
 	SDL_FreeSurface(cs);
 	SDL_FreeSurface(ts);

@@ -10,7 +10,7 @@ struct Colour {
 	uint8_t b;
 	uint8_t a;
 
-	void mutate();
+	bool mutate();
 };
 
 class Config;
@@ -30,7 +30,7 @@ class Polygon {
 		const int16_t* y() const;
 		const struct Colour& colour() const;
 
-		void mutate();
+		bool mutate();
 
 	private:
 		size_t _cap;
@@ -39,10 +39,10 @@ class Polygon {
 		int16_t* _y;
 		struct Colour _colour;
 
-		void _mutatePoint(size_t);
-		void _mutateAddPoint();
-		void _mutateDelPoint();
-		void _mutateSwapPoint();
+		bool _mutatePoint(size_t);
+		bool _mutateAddPoint();
+		bool _mutateDelPoint();
+		bool _mutateSwapPoint();
 };
 
 bool operator==(const Polygon&, const Polygon&);

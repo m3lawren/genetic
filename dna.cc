@@ -36,43 +36,50 @@ void DNA::setScore(uint64_t v) {
 
 void DNA::mutate() {
 	Config& c = Config::instance();
+	bool changed = false;
 
 	if (Utils::doMutate(c.mutPolyDelFreq())) {
-		_mutatePolyDel();
+		changed |= _mutatePolyDel();
 	}
 
 	if (Utils::doMutate(c.mutPolyAddFreq())) {
-		_mutatePolyAdd();
+		changed |= _mutatePolyAdd();
 	}
 
 	if (Utils::doMutate(c.mutPolySwapFreq())) {
-		_mutatePolySwap();
+		 changed |= _mutatePolySwap();
 	}
 	
 	for (size_t idx = 0; idx < _polys.size(); idx++) {
-		_polys[idx].mutate();
+		changed |= _polys[idx].mutate();
+	}
+	
+	if (changed) {
+		_score = (uint64_t)-1;
 	}
 }
 
-void DNA::_mutatePolyDel() {
+bool DNA::_mutatePolyDel() {
 	if (_polys.size() == 0) {
-		return;
+		return false;
 	}
 	size_t loc = Utils::randRange(0, _polys.size() - 1);
 	_polys.erase(_polys.begin() + loc);
+	return true;
 }
 
-void DNA::_mutatePolyAdd() {
+bool DNA::_mutatePolyAdd() {
 	if (_polys.size() >= Config::instance().maxPolygons()) {
-		return;
+		return false;
 	}
 	size_t loc = Utils::randRange(0, _polys.size());
 	_polys.insert(_polys.begin() + loc, Polygon());
+	return true;
 }
 
-void DNA::_mutatePolySwap() {
+bool DNA::_mutatePolySwap() {
 	if (_polys.size() <= 1) {
-		return;
+		return false;
 	}
 
 	size_t src = Utils::randRange(0, _polys.size() - 1);
@@ -85,6 +92,7 @@ void DNA::_mutatePolySwap() {
 	Polygon t = _polys[src];
 	_polys[src] = _polys[dest];
 	_polys[dest] = t;
+	return true;
 }
 
 bool operator==(const DNA& a, const DNA& b) {

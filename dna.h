@@ -27,9 +27,9 @@ class DNA {
 		std::vector<Polygon> _polys;
 		uint64_t             _score;
 
-		void _mutatePolyDel();
-		void _mutatePolyAdd();
-		void _mutatePolySwap();
+		bool _mutatePolyDel();
+		bool _mutatePolyAdd();
+		bool _mutatePolySwap();
 };
 
 bool operator==(const DNA&, const DNA&);

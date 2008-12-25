@@ -4,21 +4,27 @@
 #include <cstring>
 #include <utils.h>
 
-void Colour::mutate() {
+bool Colour::mutate() {
 	Config& c = Config::instance();
+	bool ret = false;
 
 	if (Utils::doMutate(c.mutColourFreq())) {
 		r = Utils::randRange(0, 255);
+		ret = true;
 	}
 	if (Utils::doMutate(c.mutColourFreq())) {
 		g = Utils::randRange(0, 255);
+		ret = true;
 	}
 	if (Utils::doMutate(c.mutColourFreq())) {
 		b = Utils::randRange(0, 255);
+		ret = true;
 	}
 	if (Utils::doMutate(c.mutColourFreq())) {
 		a = Utils::randRange(c.minAlpha(), c.maxAlpha());
+		ret = true;
 	}
+	return ret;
 }
 
 Polygon::Polygon() : _num(0), _x(NULL), _y(NULL) {
@@ -98,47 +104,54 @@ const struct Colour& Polygon::colour() const {
 	return _colour;
 }
 
-void Polygon::mutate() {
+bool Polygon::mutate() {
 	Config& c = Config::instance();
+	bool ret = false;
 
-	_colour.mutate();
+	ret |= _colour.mutate();
 	
 	if (Utils::doMutate(c.mutPointDelFreq())) {
-		_mutateDelPoint();
+		ret |= _mutateDelPoint();
 	}
 
 	if (Utils::doMutate(c.mutPointAddFreq())) {
-		_mutateAddPoint();
+		ret |= _mutateAddPoint();
 	}
 
 	if (Utils::doMutate(c.mutPointSwapFreq())) {
-		_mutateSwapPoint();
+		ret |= _mutateSwapPoint();
 	}
 
 	for (size_t idx = 0; idx < _num; idx++) {
-		_mutatePoint(idx);
+		ret |= _mutatePoint(idx);
 	}
+	return ret;
 }
 
-void Polygon::_mutatePoint(size_t idx) {
+bool Polygon::_mutatePoint(size_t idx) {
 	Config& c = Config::instance();
+	bool ret = false;
 	if (Utils::doMutate(c.mutPointHugeFreq())) {
 		_x[idx] = Utils::randRange(0, c.width() - 1);
 		_y[idx] = Utils::randRange(0, c.height() - 1);
+		ret = true;
 	}
 	if (Utils::doMutate(c.mutPointMedFreq())) {
 		_x[idx] = Utils::min(Utils::max(_x[idx] + Utils::randRange(-(int64_t)c.width() / 4, c.width() / 4), 0), c.width() - 1);
 		_y[idx] = Utils::min(Utils::max(_y[idx] + Utils::randRange(-(int64_t)c.height() / 4, c.height() / 4), 0), c.height() - 1);
+		ret = true;
 	}
 	if (Utils::doMutate(c.mutPointSmallFreq())) {
 		_x[idx] = Utils::min(Utils::max(_x[idx] + Utils::randRange(-3, 3), 0), c.width() - 1);
 		_y[idx] = Utils::min(Utils::max(_y[idx] + Utils::randRange(-3, 3), 0), c.height() - 1);
+		ret = true;
 	}
+	return ret;
 }
 
-void Polygon::_mutateAddPoint() {
+bool Polygon::_mutateAddPoint() {
 	if (_num >= Config::instance().maxDegree()) {
-		return;
+		return false;
 	}
 	if (_cap <= _num) {
 		_cap = _num + 1;
@@ -162,20 +175,23 @@ void Polygon::_mutateAddPoint() {
 	size_t next = (idx + 1) % _num;
 	_x[idx] = ((int32_t)_x[prev] + (int32_t)_x[next]) / 2;
 	_y[idx] = ((int32_t)_y[prev] + (int32_t)_y[next]) / 2;
+
+	return true;
 }
 
-void Polygon::_mutateDelPoint() {
+bool Polygon::_mutateDelPoint() {
 	if (_num <= 3) {
-		return;
+		return false;
 	}
 	_num--;
 	size_t idx = Utils::randRange(0, _num);
 	::memmove(_x + idx, _x + idx + 1, (_num - idx) * sizeof(int16_t));
+	return true;
 }
 
-void Polygon::_mutateSwapPoint() {
+bool Polygon::_mutateSwapPoint() {
 	if (_num <= 1) {
-		return;
+		return false;
 	}
 
 	size_t src = Utils::randRange(0, _num - 1);
@@ -191,6 +207,7 @@ void Polygon::_mutateSwapPoint() {
 	t = _y[src];
 	_y[src] = _y[dest];
 	_y[dest] = t;
+	return true;
 }
 
 bool operator==(const Polygon& a, const Polygon& b) {

@@ -25,7 +25,7 @@ sources = [
 	'graphics.cc',
 	'history.cc',
 	'main.cc',
-	#'marshall.cc',
+	'marshall.cc',
 	'mtwist.c',
 	'polygon.cc',
 	'utils.cc',
