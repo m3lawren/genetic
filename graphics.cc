@@ -58,10 +58,23 @@ Uint32 colourToInt(struct Colour c) {
 
 void renderDNA(SDL_Surface* s, const DNA& d, const Config& c) {
 	Uint32 bg = c.whiteBG() ? 0xffffffff : 0x000000ff;
-	assert(c.width() == (uint32_t)s->w && c.height() == (uint32_t)s->h);
+	float xsc = (float)(s->w - 1) / (float)(c.width() - 1);
+	float ysc = (float)(s->h - 1) / (float)(c.height() - 1);
 	boxColor(s, 0, 0, s->w - 1, s->h - 1, bg);	/* SDL_FillRect? */
 	for (size_t i = 0; i < d.num(); i++) {
-		filledPolygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
+		if (xsc != 1.0f || ysc != 1.0f) {
+			int16_t* x = new int16_t[d[i].num()];
+			int16_t* y = new int16_t[d[i].num()];
+			for (size_t j = 0; j < d[i].num(); j++) {
+				x[j] = (int16_t)(d[i].x()[j] * xsc);
+				y[j] = (int16_t)(d[i].y()[j] * ysc);
+			}
+			filledPolygonColor(s, x, y, d[i].num(), colourToInt(d[i].colour()));
+			delete[] x;
+			delete[] y;
+		} else {
+			filledPolygonColor(s, d[i].x(), d[i].y(), d[i].num(), colourToInt(d[i].colour()));
+		}
 	}
 }
 
