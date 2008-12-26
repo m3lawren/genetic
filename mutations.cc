@@ -3,6 +3,7 @@
 #include <mutations.h>
 
 #include <cassert>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 
@@ -24,7 +25,9 @@ inline int32_t min(int32_t a, int32_t b) {
 
 /* generates an int x s.t. a <= x <= b */
 int32_t randrange(int32_t a, int32_t b) {
-	assert(a <= b);
+	if (a > b) { 
+		assert(a <= b);
+	}
 	assert(b + 1 - a <= RAND_MAX);
 	if (a == b) {
 		return a;
@@ -42,44 +45,56 @@ DNA mutationAddPolygon(const DNA& d, const Config& c) {
 	std::vector<Polygon> p(d.polygons());
 	int16_t x[3], y[3];
 	struct Colour col;
-	int32_t msz = c.maxPolySize();
 	int32_t w = c.width() - 1;
 	int32_t h = c.height() - 1;
 
 	x[0] = randrange(0, w);
 	y[0] = randrange(0, h);
-	x[1] = randrange(max(0, x[0] - msz), min(w, x[0] + msz));
-	y[1] = randrange(max(0, y[0] - msz), min(h, y[0] + msz));
-	x[2] = randrange(max(0, (x[0] + x[1]) / 2 - msz), min(w, (x[0] + x[1]) / 2 + msz));
-	y[2] = randrange(max(0, (y[0] + y[1]) / 2 - msz), min(h, (y[0] + y[1]) / 2 + msz));
+	x[1] = min(max(0, x[0] + randrange(-3, 3)), w);
+	y[1] = min(max(0, y[0] + randrange(-3, 3)), h);
+	x[2] = min(max(0, x[0] + randrange(-3, 3)), w);
+	y[2] = min(max(0, y[0] + randrange(-3, 3)), h);
 
 	col.r = randrange(0, 255);
 	col.g = randrange(0, 255);
 	col.b = randrange(0, 255);
 	col.a = randrange(c.minAlpha(), c.maxAlpha());
 
-	p.push_back(Polygon(3, x, y, col));
+	size_t loc = randrange(0, p.size());
+	p.insert(p.begin() + loc, Polygon(3, x, y, col));
 
 	return DNA(p);
 }
 
 DNA mutationSwap(const DNA& d, const Config&) {
-	std::vector<Polygon> p(d.polygons());
-	int src = randrange(0, p.size() - 1);
-	int dest = randrange(0, p.size() - 1);
-	if (p.size() <= 1) {
+	if (d.num() <= 1) {
 		return d;
 	}
+
+	std::vector<Polygon> p(d.polygons());
+	size_t src = randrange(0, p.size() - 1);
+	size_t dest = randrange(0, p.size() - 1);
+
 	if (src == dest) {
 		dest = (src + 1) % p.size();
 	}
 
-	swap(p[src], p[dest]);
-
+	Polygon t = p[src];
+	if (src < dest) {
+		p.insert(p.begin() + dest, t);
+		p.erase(p.begin() + src);
+	} else {
+		p.erase(p.begin() + src);
+		p.insert(p.begin() + dest, t);
+	}
 	return DNA(p);
 }
 
 DNA mutationVertexSwap(const DNA& d, const Config&) {
+	if (d.num() < 1) {
+		return d;
+	}
+
 	std::vector<Polygon> p(d.polygons());
 	int which = randrange(0, p.size() - 1);
 	int owhich = which;
@@ -115,6 +130,10 @@ DNA mutationVertexSwap(const DNA& d, const Config&) {
 }
 
 DNA mutationVertexDelete(const DNA& d, const Config&) {
+	if (d.num() < 1) {
+		return d;
+	}
+
 	std::vector<Polygon> p(d.polygons());
 	int which = randrange(0, p.size() - 1);
 	int owhich = which;
@@ -145,6 +164,9 @@ DNA mutationVertexDelete(const DNA& d, const Config&) {
 }
 
 DNA mutationVertexAdd(const DNA& d, const Config& c) {
+	if (d.num() < 1) {
+		return d;
+	}
 	std::vector<Polygon> p(d.polygons());
 	int which = randrange(0, p.size() - 1);
 	int owhich = which;
@@ -205,77 +227,63 @@ DNA mutationDelete(const DNA& d, const Config&) {
 	return DNA(p);
 }
 
-DNA _mutationShift(const DNA& d, uint32_t whichp, uint32_t idx, bool x, int32_t minv, int32_t maxv, int32_t maxchange) {
-	if (d.num() == 0) {
-		return d;
-	}
-	std::vector<Polygon> p(d.polygons());
-	Polygon p1(p[whichp]);
-	int16_t change = randrange(-maxchange, maxchange);
-	int16_t newv = (x?p1.x():p1.y())[idx] + change;
-	if (newv < minv) {
-		newv = minv;
-	} else if (newv > maxv) {
-		newv = maxv;
-	}
-
-	int16_t* v = new int16_t[p1.num()];
-	::memcpy(v, (x?p1.x():p1.y()), p1.num() * sizeof(int16_t));
-	v[idx] = newv;
-	p[whichp] = Polygon(p1.num(), (x?v:p1.x()), (x?p1.y():v), p1.colour());
-	delete[] v;
-	return DNA(p);
-}
-
-DNA _mutationColour(const DNA& d, uint32_t whichp, uint32_t idx, int32_t minv, int32_t maxv, int32_t maxchange) {
-	std::vector<Polygon> p(d.polygons());
-	Polygon p1(p[whichp]);
-	uint8_t* v = NULL;
-	Colour c = p1.colour();
-	if (idx == 0) {
-		v = &c.r;
-	} else if (idx == 1) {
-		v = &c.g;
-	} else if (idx == 2) {
-		v = &c.b;
-	} else if (idx == 3) {
-		v = &c.a;
-	} else {
-		return d;
-	}
-
-	int32_t change = randrange(-maxchange, maxchange);
-	if ((int32_t)*v < minv - change) {
-		*v = minv;
-	} else if ((int32_t)*v > maxv - change) {
-		*v = maxv;
-	} else {
-		*v += change;
-	}
-
-	p[whichp] = Polygon(p1.num(), p1.x(), p1.y(), c);
-	return DNA(p);
-}
-
 DNA mutationPhysicalShift(const DNA& d, const Config& c) {
-	uint32_t whichp = randrange(0, d.num() - 1);
-	uint32_t idx = randrange(0, d[whichp].num() - 1);
+	if (d.num() < 1) {
+		return d;
+	}
 
-	DNA result = _mutationShift(d, whichp, idx, true, 0, c.width() - 1, c.deltaCoord());
-	return _mutationShift(result, whichp, idx, false, 0, c.height() - 1, c.deltaCoord());
+	uint32_t whichp = randrange(0, d.num() - 1);
+	std::vector<Polygon> p = d.polygons();
+	Polygon p1 = p[whichp];
+	uint32_t idx = randrange(0, p1.num() - 1);
+
+	int16_t* x = new int16_t[p1.num()];
+	int16_t* y = new int16_t[p1.num()];
+
+	::memcpy(x, p1.x(), p1.num() * sizeof(int16_t));
+	::memcpy(y, p1.y(), p1.num() * sizeof(int16_t));
+
+	switch (randrange(0, 2)) {
+		case 0:
+			x[idx] = randrange(0, c.width() - 1);
+			y[idx] = randrange(0, c.height() - 1);
+			break;
+		case 1:
+			x[idx] = min(max(x[idx] + randrange(-(int64_t)c.width() / 4, c.width() / 4), 0), c.width() - 1);
+			y[idx] = min(max(y[idx] + randrange(-(int64_t)c.height() / 4, c.height() / 4), 0), c.height() - 1);
+			break;
+		case 2:
+			x[idx] = min(max(x[idx] + randrange(-3, 3), 0), c.width() - 1);
+			y[idx] = min(max(y[idx] + randrange(-3, 3), 0), c.height() - 1);
+			break;
+	}
+
+	p[whichp] = Polygon(p1.num(), x, y, p1.colour());
+	delete[] x;
+	delete[] y;
+	return DNA(p);
 }
 
 DNA mutationColourShift(const DNA& d, const Config& c) {
+	if (d.num() < 1) {
+		return d;
+	}
+
 	uint32_t whichp = randrange(0, d.num() - 1);
 	DNA result;
-	result = _mutationColour(d, whichp, 0, 0, 255, c.deltaColour());
-	result = _mutationColour(result, whichp, 1, 0, 255, c.deltaColour());
-	result = _mutationColour(result, whichp, 2, 0, 255, c.deltaColour());
-	result = _mutationColour(result, whichp, 3, c.minAlpha(), c.maxAlpha(), c.deltaColour());
-	return result;
+	std::vector<Polygon> p(d.polygons());
+	Polygon p1(p[whichp]);
+	Colour col;
+	col.r = randrange(0, 255);
+	col.g = randrange(0, 255);
+	col.b = randrange(0, 255);
+	col.a = randrange(c.minAlpha(), c.maxAlpha());
+	p[whichp] = Polygon(p1.num(), p1.x(), p1.y(), col);
+	return DNA(p);
 }
 
 void initMutations() {
+	//REGISTER_MUT(mutationAddPolygon);
 	REGISTER_MUT(mutationSwap);
 	REGISTER_MUT(mutationDelete);
 	REGISTER_MUT(mutationVertexSwap);
@@ -291,7 +299,11 @@ DNA mutate(const DNA& d, const Config& c) {
 		initMutations();
 	}
 	int which = randrange(0, mutations.size() - 1);
-	DNA newd = mutations[which](d, c);
+	DNA newd = d;
+	int nmuts = 4 - log(randrange(1, 54));
+	for (int i = 0; i < nmuts; i++) {
+		newd = mutations[which](newd, c);
+	}
 	newd.setLastMutation(names[which]);
 	return newd;
 }
