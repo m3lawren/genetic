@@ -3,6 +3,7 @@
 *.o
 *.a
 genetic
+merge
 *.jpg
 *.png
 *.gif

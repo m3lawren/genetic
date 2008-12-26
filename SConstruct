@@ -30,3 +30,4 @@ sources = [
 ]
 
 env.Program('genetic', sources, LIBS=['SDL', 'SDL_image', 'SDL_gfx', 'extras', 'png'])
+env.Program('merge', 'merge.cc', LIBS=['SDL', 'SDL_image', 'SDL_gfx', 'extras', 'png'])
