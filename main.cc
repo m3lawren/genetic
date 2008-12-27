@@ -168,7 +168,7 @@ int main(int argc, char** argv) {
 	}
 
 	uint64_t nc = 0;
-	uint64_t targetscore = 3 * 64;
+	uint64_t targetscore = 3 * 72; // ~8.5 per RGB per pixel of difference
 	time_t lastwrite = 0;
 	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
