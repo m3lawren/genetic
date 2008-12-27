@@ -171,12 +171,12 @@ int main(int argc, char** argv) {
 	time_t lastwrite = 0;
 	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
+	SDL_Surface* ss = createSurface(c.width() * 2 - 1, c.height() * 2 - 1);
 	renderDNA(cs, d, c);
 	d.setScore(calcScore(cs, ts));
 	std::cout << "Starting main loop" << std::endl;
 	while (running) {
 		x++;
-		nc++;
 
 		if (nc > 100 + d.num() && nc % 2 == 0 && d.num() < c.maxPolygons()) {
 			cand = mutationAddPolygon(d, c);
@@ -193,7 +193,8 @@ int main(int argc, char** argv) {
 			d = cand;
 			h.update(d, x);
 			if (::time(NULL) - lastwrite > 5) {
-				IMG_SavePNG("best.png", cs, 9);
+				renderDNA(ss, d, c);
+				IMG_SavePNG("best.png", ss, 9);
 				saveState("state.xml", h, c);
 				lastwrite = ::time(NULL);
 			}
