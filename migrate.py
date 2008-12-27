@@ -16,12 +16,12 @@ def getindex(destdir):
 	for i in range(0, 26 * 26):
 		letters = toletter(i)
 		try:
-			f = open('best.' + letters + '.png')
+			f = open(os.path.join(destdir, 'best.' + letters + '.png'))
 			continue
 		except IOError:
 			pass
 		try:
-			f = open('state.' + letters + '.xml')
+			f = open(os.path.join(destdir, 'state.' + letters + '.xml'))
 			continue
 		except IOError:
 			pass
