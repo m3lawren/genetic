@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cmath>
 #include <csignal>
 #include <ctime>
 #include <getopt.h>
@@ -19,7 +20,7 @@
 int running = 1;
 
 void sighandle(int t) {
-	assert(t == SIGINT);
+	assert(t == SIGINT || t == SIGTERM);
 	running = 0;
 }
 
@@ -142,6 +143,7 @@ int main(int argc, char** argv) {
 	uint64_t x;
 
 	signal(SIGINT, sighandle);
+	signal(SIGTERM, sighandle);
 
 	init_locale();
 
@@ -168,7 +170,6 @@ int main(int argc, char** argv) {
 	}
 
 	uint64_t nc = 0;
-	uint64_t targetscore = 3 * 72; // ~8.5 per RGB per pixel of difference
 	time_t lastwrite = 0;
 	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
@@ -189,23 +190,21 @@ int main(int argc, char** argv) {
 		cand.setScore(calcScore(cs, ts));
 
 		if (cand.score() <= d.score()) {
+			time_t now = ::time(NULL);
+			double nscore = sqrt(((double)cand.score() / (double)(c.width() * c.height())) / 3.0);
 			d = cand;
 			h.update(d, x);
-			if (::time(NULL) - lastwrite > 5) {
+			if (now - lastwrite > 5) {
 				renderDNA(ss, d, c);
 				IMG_SavePNG("best.png", ss, 9);
 				saveState("state.xml", h, c);
 				lastwrite = ::time(NULL);
 			}
 			std::cout << "Replaced current with candidate. (NC: " << std::setw(5) << nc 
-			          << ", Score: " << d.score()
-						 << ", Norm: " << std::showpoint << ((double)d.score() / (double)(c.width() * c.height())) / 3.0
+						 << ", Norm: " << std::showpoint << nscore
 						 << ", Iter: " << x 
 						 << ", Poly: " << d.num() << ")" << std::endl;
 			nc = 0;
-			if (d.score() <= targetscore * c.width() * c.height()) {
-				running = 0;
-			}
 		}
 	}
 
