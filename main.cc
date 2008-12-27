@@ -168,7 +168,7 @@ int main(int argc, char** argv) {
 	}
 
 	uint64_t nc = 0;
-	uint64_t targetscore = 3 * 100;
+	uint64_t targetscore = 3 * 64;
 	time_t lastwrite = 0;
 	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
@@ -209,7 +209,8 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	IMG_SavePNG("best.png", cs, 9);
+	renderDNA(ss, d, c);
+	IMG_SavePNG("best.png", ss, 9);
 	saveState("state.xml", h, c);
 
 	SDL_FreeSurface(cs);
