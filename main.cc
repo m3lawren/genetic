@@ -168,6 +168,7 @@ int main(int argc, char** argv) {
 	}
 
 	uint64_t nc = 0;
+	uint64_t targetscore = 3 * 100;
 	time_t lastwrite = 0;
 	DNA cand;
 	SDL_Surface* cs = createSurface(c.width(), c.height());
@@ -196,11 +197,15 @@ int main(int argc, char** argv) {
 				saveState("state.xml", h, c);
 				lastwrite = ::time(NULL);
 			}
-			std::cout << "Replaced current with candidate. (NC: " << std::setw(4) << nc 
-			          << ", Score: " << std::setw(13) << d.score() 
-						 << ", Iter: " << std::setw(7) << x 
+			std::cout << "Replaced current with candidate. (NC: " << std::setw(5) << nc 
+			          << ", Score: " << d.score()
+						 << ", Norm: " << std::showpoint << ((double)d.score() / (double)(c.width() * c.height())) / 3.0
+						 << ", Iter: " << x 
 						 << ", Poly: " << d.num() << ")" << std::endl;
 			nc = 0;
+			if (d.score() <= targetscore * c.width() * c.height()) {
+				running = 0;
+			}
 		}
 	}
 
