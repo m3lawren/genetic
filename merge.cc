@@ -2,6 +2,8 @@
 #include <IMG_savepng.h>
 #include <SDL_image.h>
 
+#include <getopt.h>
+
 #include <iostream>
 
 SDL_Surface* desired = NULL;
@@ -11,10 +13,6 @@ SDL_Surface* createSurface(int32_t width, int32_t height) {
 	SDL_Surface* s;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	/*rmask = 0xff << 24;
-	gmask = 0xff << 16;
-	bmask = 0xff << 8;
-	amask = 0xff;*/
 	rmask = 0xff << 16;
 	gmask = 0xff << 8;
 	bmask = 0xff;
@@ -22,7 +20,6 @@ SDL_Surface* createSurface(int32_t width, int32_t height) {
 	rmask = 0xff;
 	gmask = 0xff << 8;
 	bmask = 0xff << 16;
-	//amask = 0xff << 24;
 #endif
 	amask = 0x00;
 
@@ -53,17 +50,50 @@ SDL_Surface* loadRGB(const char* f) {
 	return s;
 }
 
+void usage() {
+	std::cout << "merge [options] files..." << std::endl
+	          << "  --output, -o  Specifies the output file" << std::endl;
+}
+
 int main(int argc, char** argv) {
-	uint32_t num = argc - 1;
+	uint32_t num;
+	const char* output = "merge.png";
 	SDL_Surface* base = NULL;
 	SDL_Surface* temp = NULL;
 
-	//desired = createSurface(1, 1);
+	struct option longopts[] = {
+		{ "--output", 1, 0, 'o' },
+		{ "--help", 0, 0, 'h' },
+		{0, 0, 0, 0}
+	};
+	while (true) {
+		int j = getopt_long(argc, argv, "o:h", longopts, NULL);
+		if (j == -1) {
+			break;
+		}
+		switch (j) {
+			case 'o':
+				output = optarg;
+				break;
+			case 'h':
+				usage();
+				return 0;
+			default:
+				usage();
+				return 1;
+		}
+	}
+
+	num = argc - optind;
+	if (num < 2) {
+		usage();
+		return 1;
+	}
 
 	std::cout << "Merging " << num << " images." << std::endl;
 
-	for (uint32_t i = 0; i < num; i++) {
-		const char* file = argv[i + 1];
+	for (int32_t i = optind; i < argc; i++) {
+		const char* file = argv[i];
 		std::cout << "Processing '" << file << "'." << std::endl;
 		temp = loadRGB(file);
 		if (!base) {
@@ -80,8 +110,8 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	IMG_SavePNG("merge.png", base, 9);
+	IMG_SavePNG(output, base, 9);
 	SDL_FreeSurface(base);
-	std::cout << "Output saved as 'merge.png'." << std::endl;
+	std::cout << "Output saved as '" << output << "'." << std::endl;
 	return 0;
 }
